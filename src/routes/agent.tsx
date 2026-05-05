@@ -115,10 +115,10 @@ function AgentDash() {
 
   const advanceStatus = async () => {
     if (!active) return;
-    const next: Record<string, string> = { accepted: "picked_up", picked_up: "in_transit", in_transit: "delivered" };
+    const next: Record<string, "picked_up" | "in_transit" | "delivered"> = { accepted: "picked_up", picked_up: "in_transit", in_transit: "delivered" };
     const newStatus = next[active.status];
     if (!newStatus) return;
-    const update: Record<string, unknown> = { status: newStatus };
+    const update: { status: typeof newStatus; delivered_at?: string } = { status: newStatus };
     if (newStatus === "delivered") update.delivered_at = new Date().toISOString();
     const { error } = await supabase.from("deliveries").update(update).eq("id", active.id);
     if (error) { toast.error(error.message); return; }
