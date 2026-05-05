@@ -28,9 +28,11 @@ export const Route = createRootRoute({
       { title: "SwiftDrop — Same-day delivery, on-demand" },
       { name: "description", content: "SwiftDrop connects you with nearby delivery agents and drones for fast, transparent, same-day delivery." },
       { property: "og:title", content: "SwiftDrop — Same-day delivery, on-demand" },
-      { property: "og:description", content: "Send anything, anywhere. Bike couriers and drones, one tap away." },
+      { property: "og:description", content: "SwiftDrop connects you with nearby delivery agents and drones for fast, transparent, same-day delivery." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SwiftDrop — Same-day delivery, on-demand" },
+      { name: "twitter:description", content: "SwiftDrop connects you with nearby delivery agents and drones for fast, transparent, same-day delivery." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
