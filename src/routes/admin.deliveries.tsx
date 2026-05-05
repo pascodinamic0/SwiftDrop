@@ -39,10 +39,10 @@ function AdminDeliveries() {
   );
 
   const updateStatus = async (id: string, status: string) => {
-    const patch: Record<string, unknown> = { status };
+    const patch: { status: string; delivered_at?: string; accepted_at?: string } = { status };
     if (status === "delivered") patch.delivered_at = new Date().toISOString();
     if (status === "accepted") patch.accepted_at = new Date().toISOString();
-    const { error } = await supabase.from("deliveries").update(patch).eq("id", id);
+    const { error } = await supabase.from("deliveries").update(patch as never).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(`Marked ${status}`);
     load();
