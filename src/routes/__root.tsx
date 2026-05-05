@@ -1,9 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Outlet, useRouter } from "@tanstack/react-router";
+import { Outlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
-
-import { Outlet as RootOutlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -50,13 +47,8 @@ export const Route = createRootRoute({
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
+      <head><HeadContent /></head>
+      <body>{children}<Scripts /></body>
     </html>
   );
 }
@@ -64,7 +56,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <AuthProvider>
-      <RootOutlet />
+      <Outlet />
       <Toaster richColors position="top-center" />
     </AuthProvider>
   );
