@@ -14,137 +14,263 @@ export type Database = {
   }
   public: {
     Tables: {
-      agent_profiles: {
+      delivery_offers: {
         Row: {
           created_at: string
-          current_lat: number | null
-          current_lng: number | null
           id: string
-          is_online: boolean
-          total_deliveries: number
-          total_earnings: number
-          updated_at: string
-          vehicle: Database["public"]["Enums"]["vehicle_type"]
+          order_id: string
+          responded_at: string | null
+          rider_id: string
+          status: Database["public"]["Enums"]["offer_status"]
         }
         Insert: {
           created_at?: string
-          current_lat?: number | null
-          current_lng?: number | null
-          id: string
-          is_online?: boolean
-          total_deliveries?: number
-          total_earnings?: number
-          updated_at?: string
-          vehicle?: Database["public"]["Enums"]["vehicle_type"]
+          id?: string
+          order_id: string
+          responded_at?: string | null
+          rider_id: string
+          status?: Database["public"]["Enums"]["offer_status"]
         }
         Update: {
           created_at?: string
-          current_lat?: number | null
-          current_lng?: number | null
           id?: string
-          is_online?: boolean
-          total_deliveries?: number
-          total_earnings?: number
-          updated_at?: string
-          vehicle?: Database["public"]["Enums"]["vehicle_type"]
+          order_id?: string
+          responded_at?: string | null
+          rider_id?: string
+          status?: Database["public"]["Enums"]["offer_status"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "delivery_offers_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      deliveries: {
+      menu_categories: {
         Row: {
-          accepted_at: string | null
-          agent_id: string | null
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_categories_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_items: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_available: boolean
+          name: string
+          price: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          name: string
+          price: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          name?: string
+          price?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_items_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total: number
+          menu_item_id: string | null
+          name: string
+          order_id: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total: number
+          menu_item_id?: string | null
+          name: string
+          order_id: string
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total?: number
+          menu_item_id?: string | null
+          name?: string
+          order_id?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          cancelled_at: string | null
+          cash_collected: number
+          confirmed_at: string | null
           created_at: string
           customer_id: string
+          customer_name: string
+          customer_phone: string
           delivered_at: string | null
-          delivery_type: Database["public"]["Enums"]["delivery_type"]
-          distance_km: number
-          dropoff_address: string
-          dropoff_lat: number
-          dropoff_lng: number
+          delivery_address: string
+          delivery_fee: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           id: string
           notes: string | null
-          package_size: Database["public"]["Enums"]["package_size"]
-          pickup_address: string
-          pickup_lat: number
-          pickup_lng: number
-          price: number
-          status: Database["public"]["Enums"]["delivery_status"]
+          paid_at: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          picked_up_at: string | null
+          ready_at: string | null
+          rejection_reason: string | null
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          store_id: string
+          subtotal: number
+          total: number
         }
         Insert: {
-          accepted_at?: string | null
-          agent_id?: string | null
+          cancelled_at?: string | null
+          cash_collected?: number
+          confirmed_at?: string | null
           created_at?: string
           customer_id: string
+          customer_name: string
+          customer_phone: string
           delivered_at?: string | null
-          delivery_type?: Database["public"]["Enums"]["delivery_type"]
-          distance_km: number
-          dropoff_address: string
-          dropoff_lat: number
-          dropoff_lng: number
+          delivery_address: string
+          delivery_fee?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
           id?: string
           notes?: string | null
-          package_size?: Database["public"]["Enums"]["package_size"]
-          pickup_address: string
-          pickup_lat: number
-          pickup_lng: number
-          price: number
-          status?: Database["public"]["Enums"]["delivery_status"]
+          paid_at?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          picked_up_at?: string | null
+          ready_at?: string | null
+          rejection_reason?: string | null
+          rider_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          store_id: string
+          subtotal?: number
+          total?: number
         }
         Update: {
-          accepted_at?: string | null
-          agent_id?: string | null
+          cancelled_at?: string | null
+          cash_collected?: number
+          confirmed_at?: string | null
           created_at?: string
           customer_id?: string
+          customer_name?: string
+          customer_phone?: string
           delivered_at?: string | null
-          delivery_type?: Database["public"]["Enums"]["delivery_type"]
-          distance_km?: number
-          dropoff_address?: string
-          dropoff_lat?: number
-          dropoff_lng?: number
+          delivery_address?: string
+          delivery_fee?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
           id?: string
           notes?: string | null
-          package_size?: Database["public"]["Enums"]["package_size"]
-          pickup_address?: string
-          pickup_lat?: number
-          pickup_lng?: number
-          price?: number
-          status?: Database["public"]["Enums"]["delivery_status"]
+          paid_at?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          picked_up_at?: string | null
+          ready_at?: string | null
+          rejection_reason?: string | null
+          rider_id?: string | null
+          status?: Database["public"]["Enums"]["order_status"]
+          store_id?: string
+          subtotal?: number
+          total?: number
         }
-        Relationships: []
-      }
-      pricing_config: {
-        Row: {
-          base_fare: number
-          drone_multiplier: number
-          id: number
-          per_km: number
-          size_large: number
-          size_medium: number
-          size_small: number
-          updated_at: string
-        }
-        Insert: {
-          base_fare?: number
-          drone_multiplier?: number
-          id?: number
-          per_km?: number
-          size_large?: number
-          size_medium?: number
-          size_small?: number
-          updated_at?: string
-        }
-        Update: {
-          base_fare?: number
-          drone_multiplier?: number
-          id?: number
-          per_km?: number
-          size_large?: number
-          size_medium?: number
-          size_small?: number
-          updated_at?: string
-        }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -179,43 +305,98 @@ export type Database = {
         }
         Relationships: []
       }
-      ratings: {
+      rider_profiles: {
         Row: {
-          agent_id: string
-          comment: string | null
+          cash_collected: number
           created_at: string
-          customer_id: string
-          delivery_id: string
+          current_lat: number | null
+          current_lng: number | null
           id: string
-          stars: number
+          is_online: boolean
+          total_deliveries: number
+          total_earnings: number
+          updated_at: string
+          vehicle: Database["public"]["Enums"]["vehicle_type"]
         }
         Insert: {
-          agent_id: string
-          comment?: string | null
+          cash_collected?: number
           created_at?: string
-          customer_id: string
-          delivery_id: string
-          id?: string
-          stars: number
+          current_lat?: number | null
+          current_lng?: number | null
+          id: string
+          is_online?: boolean
+          total_deliveries?: number
+          total_earnings?: number
+          updated_at?: string
+          vehicle?: Database["public"]["Enums"]["vehicle_type"]
         }
         Update: {
-          agent_id?: string
-          comment?: string | null
+          cash_collected?: number
           created_at?: string
-          customer_id?: string
-          delivery_id?: string
+          current_lat?: number | null
+          current_lng?: number | null
           id?: string
-          stars?: number
+          is_online?: boolean
+          total_deliveries?: number
+          total_earnings?: number
+          updated_at?: string
+          vehicle?: Database["public"]["Enums"]["vehicle_type"]
         }
-        Relationships: [
-          {
-            foreignKeyName: "ratings_delivery_id_fkey"
-            columns: ["delivery_id"]
-            isOneToOne: true
-            referencedRelation: "deliveries"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          address: string
+          category: Database["public"]["Enums"]["store_category"]
+          contact_phone: string | null
+          created_at: string
+          delivery_fee: number
+          description: string | null
+          id: string
+          image_url: string | null
+          is_open: boolean
+          lat: number | null
+          lng: number | null
+          mode: Database["public"]["Enums"]["store_mode"]
+          name: string
+          owner_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          category?: Database["public"]["Enums"]["store_category"]
+          contact_phone?: string | null
+          created_at?: string
+          delivery_fee?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_open?: boolean
+          lat?: number | null
+          lng?: number | null
+          mode?: Database["public"]["Enums"]["store_mode"]
+          name: string
+          owner_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          category?: Database["public"]["Enums"]["store_category"]
+          contact_phone?: string | null
+          created_at?: string
+          delivery_fee?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_open?: boolean
+          lat?: number | null
+          lng?: number | null
+          mode?: Database["public"]["Enums"]["store_mode"]
+          name?: string
+          owner_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -252,17 +433,22 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "customer" | "delivery_agent" | "admin"
-      delivery_status:
-        | "pending"
-        | "accepted"
+      app_role: "customer" | "delivery_agent" | "admin" | "vendor"
+      offer_status: "offered" | "accepted" | "declined" | "expired" | "taken"
+      order_status:
+        | "pending_confirmation"
+        | "awaiting_payment"
+        | "preparing"
+        | "ready"
         | "picked_up"
-        | "in_transit"
         | "delivered"
         | "cancelled"
-      delivery_type: "human" | "drone"
-      package_size: "small" | "medium" | "large"
-      vehicle_type: "foot" | "bike" | "car" | "van"
+        | "rejected"
+        | "failed"
+      payment_status: "unpaid" | "paid" | "refunded"
+      store_category: "food" | "grocery" | "pharmacy" | "other"
+      store_mode: "manual" | "dashboard"
+      vehicle_type: "foot" | "bike" | "motorbike" | "car"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -390,18 +576,23 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["customer", "delivery_agent", "admin"],
-      delivery_status: [
-        "pending",
-        "accepted",
+      app_role: ["customer", "delivery_agent", "admin", "vendor"],
+      offer_status: ["offered", "accepted", "declined", "expired", "taken"],
+      order_status: [
+        "pending_confirmation",
+        "awaiting_payment",
+        "preparing",
+        "ready",
         "picked_up",
-        "in_transit",
         "delivered",
         "cancelled",
+        "rejected",
+        "failed",
       ],
-      delivery_type: ["human", "drone"],
-      package_size: ["small", "medium", "large"],
-      vehicle_type: ["foot", "bike", "car", "van"],
+      payment_status: ["unpaid", "paid", "refunded"],
+      store_category: ["food", "grocery", "pharmacy", "other"],
+      store_mode: ["manual", "dashboard"],
+      vehicle_type: ["foot", "bike", "motorbike", "car"],
     },
   },
 } as const

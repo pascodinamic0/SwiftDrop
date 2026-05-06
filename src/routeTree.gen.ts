@@ -9,45 +9,57 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as DriveRouteImport } from './routes/drive'
-import { Route as CustomerRouteImport } from './routes/customer'
+import { Route as VendorRouteImport } from './routes/vendor'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as RiderRouteImport } from './routes/rider'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as BecomeRiderRouteImport } from './routes/become-rider'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AgentRouteImport } from './routes/agent'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VendorIndexRouteImport } from './routes/vendor.index'
+import { Route as RiderIndexRouteImport } from './routes/rider.index'
+import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as VendorSettingsRouteImport } from './routes/vendor.settings'
+import { Route as VendorMenuRouteImport } from './routes/vendor.menu'
+import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
+import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
+import { Route as RiderActiveRouteImport } from './routes/rider.active'
+import { Route as OrdersIdRouteImport } from './routes/orders.$id'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminRatingsRouteImport } from './routes/admin.ratings'
-import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
-import { Route as AdminDeliveriesRouteImport } from './routes/admin.deliveries'
-import { Route as AdminAgentsRouteImport } from './routes/admin.agents'
+import { Route as AdminStoresRouteImport } from './routes/admin.stores'
+import { Route as AdminRidersRouteImport } from './routes/admin.riders'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
-const HowItWorksRoute = HowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
+const VendorRoute = VendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DriveRoute = DriveRouteImport.update({
-  id: '/drive',
-  path: '/drive',
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CustomerRoute = CustomerRouteImport.update({
-  id: '/customer',
-  path: '/customer',
+const RiderRoute = RiderRouteImport.update({
+  id: '/rider',
+  path: '/rider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BecomeRiderRoute = BecomeRiderRouteImport.update({
+  id: '/become-rider',
+  path: '/become-rider',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgentRoute = AgentRouteImport.update({
-  id: '/agent',
-  path: '/agent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -60,14 +72,54 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VendorIndexRoute = VendorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VendorRoute,
+} as any)
+const RiderIndexRoute = RiderIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RiderRoute,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const TrackIdRoute = TrackIdRouteImport.update({
-  id: '/track/$id',
-  path: '/track/$id',
+const VendorSettingsRoute = VendorSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorMenuRoute = VendorMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => VendorRoute,
+} as any)
+const ShopStoreIdRoute = ShopStoreIdRouteImport.update({
+  id: '/$storeId',
+  path: '/$storeId',
+  getParentRoute: () => ShopRoute,
+} as any)
+const RiderEarningsRoute = RiderEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => RiderRoute,
+} as any)
+const RiderActiveRoute = RiderActiveRouteImport.update({
+  id: '/active',
+  path: '/active',
+  getParentRoute: () => RiderRoute,
+} as any)
+const OrdersIdRoute = OrdersIdRouteImport.update({
+  id: '/orders/$id',
+  path: '/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -75,168 +127,212 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const AdminStoresRoute = AdminStoresRouteImport.update({
+  id: '/stores',
+  path: '/stores',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminRatingsRoute = AdminRatingsRouteImport.update({
-  id: '/ratings',
-  path: '/ratings',
+const AdminRidersRoute = AdminRidersRouteImport.update({
+  id: '/riders',
+  path: '/riders',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPricingRoute = AdminPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDeliveriesRoute = AdminDeliveriesRouteImport.update({
-  id: '/deliveries',
-  path: '/deliveries',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAgentsRoute = AdminAgentsRouteImport.update({
-  id: '/agents',
-  path: '/agents',
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/agent': typeof AgentRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
+  '/become-rider': typeof BecomeRiderRoute
+  '/cart': typeof CartRoute
+  '/rider': typeof RiderRouteWithChildren
+  '/shop': typeof ShopRouteWithChildren
+  '/vendor': typeof VendorRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/riders': typeof AdminRidersRoute
+  '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
+  '/orders/$id': typeof OrdersIdRoute
+  '/rider/active': typeof RiderActiveRoute
+  '/rider/earnings': typeof RiderEarningsRoute
+  '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/admin/': typeof AdminIndexRoute
+  '/orders/': typeof OrdersIndexRoute
+  '/rider/': typeof RiderIndexRoute
+  '/vendor/': typeof VendorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agent': typeof AgentRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
+  '/become-rider': typeof BecomeRiderRoute
+  '/cart': typeof CartRoute
+  '/shop': typeof ShopRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/riders': typeof AdminRidersRoute
+  '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
+  '/orders/$id': typeof OrdersIdRoute
+  '/rider/active': typeof RiderActiveRoute
+  '/rider/earnings': typeof RiderEarningsRoute
+  '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/admin': typeof AdminIndexRoute
+  '/orders': typeof OrdersIndexRoute
+  '/rider': typeof RiderIndexRoute
+  '/vendor': typeof VendorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/agent': typeof AgentRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
+  '/become-rider': typeof BecomeRiderRoute
+  '/cart': typeof CartRoute
+  '/rider': typeof RiderRouteWithChildren
+  '/shop': typeof ShopRouteWithChildren
+  '/vendor': typeof VendorRouteWithChildren
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/riders': typeof AdminRidersRoute
+  '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
+  '/orders/$id': typeof OrdersIdRoute
+  '/rider/active': typeof RiderActiveRoute
+  '/rider/earnings': typeof RiderEarningsRoute
+  '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/admin/': typeof AdminIndexRoute
+  '/orders/': typeof OrdersIndexRoute
+  '/rider/': typeof RiderIndexRoute
+  '/vendor/': typeof VendorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/admin'
-    | '/agent'
     | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
+    | '/become-rider'
+    | '/cart'
+    | '/rider'
+    | '/shop'
+    | '/vendor'
+    | '/admin/orders'
+    | '/admin/riders'
+    | '/admin/stores'
     | '/admin/users'
-    | '/track/$id'
+    | '/orders/$id'
+    | '/rider/active'
+    | '/rider/earnings'
+    | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/admin/'
+    | '/orders/'
+    | '/rider/'
+    | '/vendor/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agent'
     | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
+    | '/become-rider'
+    | '/cart'
+    | '/shop'
+    | '/admin/orders'
+    | '/admin/riders'
+    | '/admin/stores'
     | '/admin/users'
-    | '/track/$id'
+    | '/orders/$id'
+    | '/rider/active'
+    | '/rider/earnings'
+    | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/admin'
+    | '/orders'
+    | '/rider'
+    | '/vendor'
   id:
     | '__root__'
     | '/'
     | '/admin'
-    | '/agent'
     | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
+    | '/become-rider'
+    | '/cart'
+    | '/rider'
+    | '/shop'
+    | '/vendor'
+    | '/admin/orders'
+    | '/admin/riders'
+    | '/admin/stores'
     | '/admin/users'
-    | '/track/$id'
+    | '/orders/$id'
+    | '/rider/active'
+    | '/rider/earnings'
+    | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/admin/'
+    | '/orders/'
+    | '/rider/'
+    | '/vendor/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AgentRoute: typeof AgentRoute
   AuthRoute: typeof AuthRoute
-  CustomerRoute: typeof CustomerRoute
-  DriveRoute: typeof DriveRoute
-  HowItWorksRoute: typeof HowItWorksRoute
-  TrackIdRoute: typeof TrackIdRoute
+  BecomeRiderRoute: typeof BecomeRiderRoute
+  CartRoute: typeof CartRoute
+  RiderRoute: typeof RiderRouteWithChildren
+  ShopRoute: typeof ShopRouteWithChildren
+  VendorRoute: typeof VendorRouteWithChildren
+  OrdersIdRoute: typeof OrdersIdRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/how-it-works': {
-      id: '/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof HowItWorksRouteImport
+    '/vendor': {
+      id: '/vendor'
+      path: '/vendor'
+      fullPath: '/vendor'
+      preLoaderRoute: typeof VendorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/drive': {
-      id: '/drive'
-      path: '/drive'
-      fullPath: '/drive'
-      preLoaderRoute: typeof DriveRouteImport
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/customer': {
-      id: '/customer'
-      path: '/customer'
-      fullPath: '/customer'
-      preLoaderRoute: typeof CustomerRouteImport
+    '/rider': {
+      id: '/rider'
+      path: '/rider'
+      fullPath: '/rider'
+      preLoaderRoute: typeof RiderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/become-rider': {
+      id: '/become-rider'
+      path: '/become-rider'
+      fullPath: '/become-rider'
+      preLoaderRoute: typeof BecomeRiderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -244,13 +340,6 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agent': {
-      id: '/agent'
-      path: '/agent'
-      fullPath: '/agent'
-      preLoaderRoute: typeof AgentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -267,6 +356,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vendor/': {
+      id: '/vendor/'
+      path: '/'
+      fullPath: '/vendor/'
+      preLoaderRoute: typeof VendorIndexRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/rider/': {
+      id: '/rider/'
+      path: '/'
+      fullPath: '/rider/'
+      preLoaderRoute: typeof RiderIndexRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -274,11 +384,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/track/$id': {
-      id: '/track/$id'
-      path: '/track/$id'
-      fullPath: '/track/$id'
-      preLoaderRoute: typeof TrackIdRouteImport
+    '/vendor/settings': {
+      id: '/vendor/settings'
+      path: '/settings'
+      fullPath: '/vendor/settings'
+      preLoaderRoute: typeof VendorSettingsRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/menu': {
+      id: '/vendor/menu'
+      path: '/menu'
+      fullPath: '/vendor/menu'
+      preLoaderRoute: typeof VendorMenuRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/shop/$storeId': {
+      id: '/shop/$storeId'
+      path: '/$storeId'
+      fullPath: '/shop/$storeId'
+      preLoaderRoute: typeof ShopStoreIdRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/rider/earnings': {
+      id: '/rider/earnings'
+      path: '/earnings'
+      fullPath: '/rider/earnings'
+      preLoaderRoute: typeof RiderEarningsRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/rider/active': {
+      id: '/rider/active'
+      path: '/active'
+      fullPath: '/rider/active'
+      preLoaderRoute: typeof RiderActiveRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/orders/$id': {
+      id: '/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/orders/$id'
+      preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/users': {
@@ -288,85 +433,99 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
+    '/admin/stores': {
+      id: '/admin/stores'
+      path: '/stores'
+      fullPath: '/admin/stores'
+      preLoaderRoute: typeof AdminStoresRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/ratings': {
-      id: '/admin/ratings'
-      path: '/ratings'
-      fullPath: '/admin/ratings'
-      preLoaderRoute: typeof AdminRatingsRouteImport
+    '/admin/riders': {
+      id: '/admin/riders'
+      path: '/riders'
+      fullPath: '/admin/riders'
+      preLoaderRoute: typeof AdminRidersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/pricing': {
-      id: '/admin/pricing'
-      path: '/pricing'
-      fullPath: '/admin/pricing'
-      preLoaderRoute: typeof AdminPricingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/deliveries': {
-      id: '/admin/deliveries'
-      path: '/deliveries'
-      fullPath: '/admin/deliveries'
-      preLoaderRoute: typeof AdminDeliveriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/agents': {
-      id: '/admin/agents'
-      path: '/agents'
-      fullPath: '/admin/agents'
-      preLoaderRoute: typeof AdminAgentsRouteImport
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
   }
 }
 
 interface AdminRouteChildren {
-  AdminAgentsRoute: typeof AdminAgentsRoute
-  AdminDeliveriesRoute: typeof AdminDeliveriesRoute
-  AdminPricingRoute: typeof AdminPricingRoute
-  AdminRatingsRoute: typeof AdminRatingsRoute
-  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminRidersRoute: typeof AdminRidersRoute
+  AdminStoresRoute: typeof AdminStoresRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminAgentsRoute: AdminAgentsRoute,
-  AdminDeliveriesRoute: AdminDeliveriesRoute,
-  AdminPricingRoute: AdminPricingRoute,
-  AdminRatingsRoute: AdminRatingsRoute,
-  AdminSettingsRoute: AdminSettingsRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
+  AdminRidersRoute: AdminRidersRoute,
+  AdminStoresRoute: AdminStoresRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface RiderRouteChildren {
+  RiderActiveRoute: typeof RiderActiveRoute
+  RiderEarningsRoute: typeof RiderEarningsRoute
+  RiderIndexRoute: typeof RiderIndexRoute
+}
+
+const RiderRouteChildren: RiderRouteChildren = {
+  RiderActiveRoute: RiderActiveRoute,
+  RiderEarningsRoute: RiderEarningsRoute,
+  RiderIndexRoute: RiderIndexRoute,
+}
+
+const RiderRouteWithChildren = RiderRoute._addFileChildren(RiderRouteChildren)
+
+interface ShopRouteChildren {
+  ShopStoreIdRoute: typeof ShopStoreIdRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopStoreIdRoute: ShopStoreIdRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
+interface VendorRouteChildren {
+  VendorMenuRoute: typeof VendorMenuRoute
+  VendorSettingsRoute: typeof VendorSettingsRoute
+  VendorIndexRoute: typeof VendorIndexRoute
+}
+
+const VendorRouteChildren: VendorRouteChildren = {
+  VendorMenuRoute: VendorMenuRoute,
+  VendorSettingsRoute: VendorSettingsRoute,
+  VendorIndexRoute: VendorIndexRoute,
+}
+
+const VendorRouteWithChildren =
+  VendorRoute._addFileChildren(VendorRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AgentRoute: AgentRoute,
   AuthRoute: AuthRoute,
-  CustomerRoute: CustomerRoute,
-  DriveRoute: DriveRoute,
-  HowItWorksRoute: HowItWorksRoute,
-  TrackIdRoute: TrackIdRoute,
+  BecomeRiderRoute: BecomeRiderRoute,
+  CartRoute: CartRoute,
+  RiderRoute: RiderRouteWithChildren,
+  ShopRoute: ShopRouteWithChildren,
+  VendorRoute: VendorRouteWithChildren,
+  OrdersIdRoute: OrdersIdRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
