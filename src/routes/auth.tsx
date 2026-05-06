@@ -38,7 +38,10 @@ function AuthPage() {
   // Redirect once authed
   useEffect(() => {
     if (loading || !user) return;
-    const dash = roles.includes("admin") ? "/admin" : roles.includes("delivery_agent") ? "/agent" : "/customer";
+    const dash = roles.includes("admin") ? "/admin"
+               : roles.includes("vendor") ? "/vendor"
+               : roles.includes("delivery_agent") ? "/rider"
+               : "/shop";
     navigate({ to: dash });
   }, [user, roles, loading, navigate]);
 
