@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VendorRouteImport } from './routes/vendor'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as RiderRouteImport } from './routes/rider'
 import { Route as CartRouteImport } from './routes/cart'
@@ -16,13 +17,21 @@ import { Route as BecomeRiderRouteImport } from './routes/become-rider'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VendorIndexRouteImport } from './routes/vendor.index'
 import { Route as RiderIndexRouteImport } from './routes/rider.index'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as VendorSettingsRouteImport } from './routes/vendor.settings'
+import { Route as VendorMenuRouteImport } from './routes/vendor.menu'
 import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
 import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
 import { Route as RiderActiveRouteImport } from './routes/rider.active'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
 
+const VendorRoute = VendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -58,6 +67,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VendorIndexRoute = VendorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VendorRoute,
+} as any)
 const RiderIndexRoute = RiderIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,6 +81,16 @@ const OrdersIndexRoute = OrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VendorSettingsRoute = VendorSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorMenuRoute = VendorMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => VendorRoute,
 } as any)
 const ShopStoreIdRoute = ShopStoreIdRouteImport.update({
   id: '/$storeId',
@@ -97,12 +121,16 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/rider': typeof RiderRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/vendor': typeof VendorRouteWithChildren
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
   '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
+  '/vendor/': typeof VendorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,8 +143,11 @@ export interface FileRoutesByTo {
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
   '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/orders': typeof OrdersIndexRoute
   '/rider': typeof RiderIndexRoute
+  '/vendor': typeof VendorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -127,12 +158,16 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/rider': typeof RiderRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/vendor': typeof VendorRouteWithChildren
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
   '/shop/$storeId': typeof ShopStoreIdRoute
+  '/vendor/menu': typeof VendorMenuRoute
+  '/vendor/settings': typeof VendorSettingsRoute
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
+  '/vendor/': typeof VendorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -144,12 +179,16 @@ export interface FileRouteTypes {
     | '/cart'
     | '/rider'
     | '/shop'
+    | '/vendor'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
     | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/orders/'
     | '/rider/'
+    | '/vendor/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -162,8 +201,11 @@ export interface FileRouteTypes {
     | '/rider/active'
     | '/rider/earnings'
     | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/orders'
     | '/rider'
+    | '/vendor'
   id:
     | '__root__'
     | '/'
@@ -173,12 +215,16 @@ export interface FileRouteTypes {
     | '/cart'
     | '/rider'
     | '/shop'
+    | '/vendor'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
     | '/shop/$storeId'
+    | '/vendor/menu'
+    | '/vendor/settings'
     | '/orders/'
     | '/rider/'
+    | '/vendor/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -189,12 +235,20 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   RiderRoute: typeof RiderRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
+  VendorRoute: typeof VendorRouteWithChildren
   OrdersIdRoute: typeof OrdersIdRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vendor': {
+      id: '/vendor'
+      path: '/vendor'
+      fullPath: '/vendor'
+      preLoaderRoute: typeof VendorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -244,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vendor/': {
+      id: '/vendor/'
+      path: '/'
+      fullPath: '/vendor/'
+      preLoaderRoute: typeof VendorIndexRouteImport
+      parentRoute: typeof VendorRoute
+    }
     '/rider/': {
       id: '/rider/'
       path: '/'
@@ -257,6 +318,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/orders/'
       preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/vendor/settings': {
+      id: '/vendor/settings'
+      path: '/settings'
+      fullPath: '/vendor/settings'
+      preLoaderRoute: typeof VendorSettingsRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/menu': {
+      id: '/vendor/menu'
+      path: '/menu'
+      fullPath: '/vendor/menu'
+      preLoaderRoute: typeof VendorMenuRouteImport
+      parentRoute: typeof VendorRoute
     }
     '/shop/$storeId': {
       id: '/shop/$storeId'
@@ -313,6 +388,21 @@ const ShopRouteChildren: ShopRouteChildren = {
 
 const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
+interface VendorRouteChildren {
+  VendorMenuRoute: typeof VendorMenuRoute
+  VendorSettingsRoute: typeof VendorSettingsRoute
+  VendorIndexRoute: typeof VendorIndexRoute
+}
+
+const VendorRouteChildren: VendorRouteChildren = {
+  VendorMenuRoute: VendorMenuRoute,
+  VendorSettingsRoute: VendorSettingsRoute,
+  VendorIndexRoute: VendorIndexRoute,
+}
+
+const VendorRouteWithChildren =
+  VendorRoute._addFileChildren(VendorRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -321,6 +411,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   RiderRoute: RiderRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
+  VendorRoute: VendorRouteWithChildren,
   OrdersIdRoute: OrdersIdRoute,
   OrdersIndexRoute: OrdersIndexRoute,
 }

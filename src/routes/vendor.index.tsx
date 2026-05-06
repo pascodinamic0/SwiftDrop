@@ -76,7 +76,7 @@ function VendorOrders() {
   };
 
   const setStatus = async (id: string, status: "preparing" | "ready") => {
-    const patch: { status: string; ready_at?: string } = { status };
+    const patch: { status: "preparing" | "ready"; ready_at?: string } = { status };
     if (status === "ready") patch.ready_at = new Date().toISOString();
     const { error } = await supabase.from("orders").update(patch).eq("id", id);
     if (error) return toast.error(error.message);
