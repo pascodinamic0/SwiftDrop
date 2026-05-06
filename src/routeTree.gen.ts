@@ -9,45 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as DriveRouteImport } from './routes/drive'
-import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AgentRouteImport } from './routes/agent'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TrackIdRouteImport } from './routes/track.$id'
-import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminRatingsRouteImport } from './routes/admin.ratings'
-import { Route as AdminPricingRouteImport } from './routes/admin.pricing'
-import { Route as AdminDeliveriesRouteImport } from './routes/admin.deliveries'
-import { Route as AdminAgentsRouteImport } from './routes/admin.agents'
 
-const HowItWorksRoute = HowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DriveRoute = DriveRouteImport.update({
-  id: '/drive',
-  path: '/drive',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustomerRoute = CustomerRouteImport.update({
-  id: '/customer',
-  path: '/customer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgentRoute = AgentRouteImport.update({
-  id: '/agent',
-  path: '/agent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -60,197 +28,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const TrackIdRoute = TrackIdRouteImport.update({
-  id: '/track/$id',
-  path: '/track/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRatingsRoute = AdminRatingsRouteImport.update({
-  id: '/ratings',
-  path: '/ratings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPricingRoute = AdminPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDeliveriesRoute = AdminDeliveriesRouteImport.update({
-  id: '/deliveries',
-  path: '/deliveries',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAgentsRoute = AdminAgentsRouteImport.update({
-  id: '/agents',
-  path: '/agents',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/agent': typeof AgentRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
-  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agent': typeof AgentRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
-  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/agent': typeof AgentRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/customer': typeof CustomerRoute
-  '/drive': typeof DriveRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/admin/agents': typeof AdminAgentsRoute
-  '/admin/deliveries': typeof AdminDeliveriesRoute
-  '/admin/pricing': typeof AdminPricingRoute
-  '/admin/ratings': typeof AdminRatingsRoute
-  '/admin/settings': typeof AdminSettingsRoute
-  '/admin/users': typeof AdminUsersRoute
-  '/track/$id': typeof TrackIdRoute
-  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/agent'
-    | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
-    | '/admin/users'
-    | '/track/$id'
-    | '/admin/'
+  fullPaths: '/' | '/admin' | '/auth'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/agent'
-    | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
-    | '/admin/users'
-    | '/track/$id'
-    | '/admin'
-  id:
-    | '__root__'
-    | '/'
-    | '/admin'
-    | '/agent'
-    | '/auth'
-    | '/customer'
-    | '/drive'
-    | '/how-it-works'
-    | '/admin/agents'
-    | '/admin/deliveries'
-    | '/admin/pricing'
-    | '/admin/ratings'
-    | '/admin/settings'
-    | '/admin/users'
-    | '/track/$id'
-    | '/admin/'
+  to: '/' | '/admin' | '/auth'
+  id: '__root__' | '/' | '/admin' | '/auth'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AgentRoute: typeof AgentRoute
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  CustomerRoute: typeof CustomerRoute
-  DriveRoute: typeof DriveRoute
-  HowItWorksRoute: typeof HowItWorksRoute
-  TrackIdRoute: typeof TrackIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/how-it-works': {
-      id: '/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof HowItWorksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/drive': {
-      id: '/drive'
-      path: '/drive'
-      fullPath: '/drive'
-      preLoaderRoute: typeof DriveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/customer': {
-      id: '/customer'
-      path: '/customer'
-      fullPath: '/customer'
-      preLoaderRoute: typeof CustomerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agent': {
-      id: '/agent'
-      path: '/agent'
-      fullPath: '/agent'
-      preLoaderRoute: typeof AgentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -267,97 +82,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/track/$id': {
-      id: '/track/$id'
-      path: '/track/$id'
-      fullPath: '/track/$id'
-      preLoaderRoute: typeof TrackIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/ratings': {
-      id: '/admin/ratings'
-      path: '/ratings'
-      fullPath: '/admin/ratings'
-      preLoaderRoute: typeof AdminRatingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pricing': {
-      id: '/admin/pricing'
-      path: '/pricing'
-      fullPath: '/admin/pricing'
-      preLoaderRoute: typeof AdminPricingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/deliveries': {
-      id: '/admin/deliveries'
-      path: '/deliveries'
-      fullPath: '/admin/deliveries'
-      preLoaderRoute: typeof AdminDeliveriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/agents': {
-      id: '/admin/agents'
-      path: '/agents'
-      fullPath: '/admin/agents'
-      preLoaderRoute: typeof AdminAgentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
-interface AdminRouteChildren {
-  AdminAgentsRoute: typeof AdminAgentsRoute
-  AdminDeliveriesRoute: typeof AdminDeliveriesRoute
-  AdminPricingRoute: typeof AdminPricingRoute
-  AdminRatingsRoute: typeof AdminRatingsRoute
-  AdminSettingsRoute: typeof AdminSettingsRoute
-  AdminUsersRoute: typeof AdminUsersRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminAgentsRoute: AdminAgentsRoute,
-  AdminDeliveriesRoute: AdminDeliveriesRoute,
-  AdminPricingRoute: AdminPricingRoute,
-  AdminRatingsRoute: AdminRatingsRoute,
-  AdminSettingsRoute: AdminSettingsRoute,
-  AdminUsersRoute: AdminUsersRoute,
-  AdminIndexRoute: AdminIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AgentRoute: AgentRoute,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  CustomerRoute: CustomerRoute,
-  DriveRoute: DriveRoute,
-  HowItWorksRoute: HowItWorksRoute,
-  TrackIdRoute: TrackIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
