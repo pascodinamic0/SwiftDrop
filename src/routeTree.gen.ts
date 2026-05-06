@@ -9,9 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhyUsRouteImport } from './routes/why-us'
 import { Route as VendorRouteImport } from './routes/vendor'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as RiderRouteImport } from './routes/rider'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as BecomeRiderRouteImport } from './routes/become-rider'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -32,9 +35,19 @@ import { Route as AdminStoresRouteImport } from './routes/admin.stores'
 import { Route as AdminRidersRouteImport } from './routes/admin.riders'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
+const WhyUsRoute = WhyUsRouteImport.update({
+  id: '/why-us',
+  path: '/why-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VendorRoute = VendorRouteImport.update({
   id: '/vendor',
   path: '/vendor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -45,6 +58,11 @@ const ShopRoute = ShopRouteImport.update({
 const RiderRoute = RiderRouteImport.update({
   id: '/rider',
   path: '/rider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -149,9 +167,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
+  '/privacy': typeof PrivacyRoute
   '/rider': typeof RiderRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/terms': typeof TermsRoute
   '/vendor': typeof VendorRouteWithChildren
+  '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/stores': typeof AdminStoresRoute
@@ -172,7 +193,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
+  '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRouteWithChildren
+  '/terms': typeof TermsRoute
+  '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/stores': typeof AdminStoresRoute
@@ -195,9 +219,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
+  '/privacy': typeof PrivacyRoute
   '/rider': typeof RiderRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/terms': typeof TermsRoute
   '/vendor': typeof VendorRouteWithChildren
+  '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/stores': typeof AdminStoresRoute
@@ -221,9 +248,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/become-rider'
     | '/cart'
+    | '/privacy'
     | '/rider'
     | '/shop'
+    | '/terms'
     | '/vendor'
+    | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
     | '/admin/stores'
@@ -244,7 +274,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/become-rider'
     | '/cart'
+    | '/privacy'
     | '/shop'
+    | '/terms'
+    | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
     | '/admin/stores'
@@ -266,9 +299,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/become-rider'
     | '/cart'
+    | '/privacy'
     | '/rider'
     | '/shop'
+    | '/terms'
     | '/vendor'
+    | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
     | '/admin/stores'
@@ -291,20 +327,37 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BecomeRiderRoute: typeof BecomeRiderRoute
   CartRoute: typeof CartRoute
+  PrivacyRoute: typeof PrivacyRoute
   RiderRoute: typeof RiderRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
+  TermsRoute: typeof TermsRoute
   VendorRoute: typeof VendorRouteWithChildren
+  WhyUsRoute: typeof WhyUsRoute
   OrdersIdRoute: typeof OrdersIdRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/why-us': {
+      id: '/why-us'
+      path: '/why-us'
+      fullPath: '/why-us'
+      preLoaderRoute: typeof WhyUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vendor': {
       id: '/vendor'
       path: '/vendor'
       fullPath: '/vendor'
       preLoaderRoute: typeof VendorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -319,6 +372,13 @@ declare module '@tanstack/react-router' {
       path: '/rider'
       fullPath: '/rider'
       preLoaderRoute: typeof RiderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -520,12 +580,24 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BecomeRiderRoute: BecomeRiderRoute,
   CartRoute: CartRoute,
+  PrivacyRoute: PrivacyRoute,
   RiderRoute: RiderRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
+  TermsRoute: TermsRoute,
   VendorRoute: VendorRouteWithChildren,
+  WhyUsRoute: WhyUsRoute,
   OrdersIdRoute: OrdersIdRoute,
   OrdersIndexRoute: OrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

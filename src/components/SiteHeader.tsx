@@ -16,9 +16,22 @@ export function SiteHeader() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Logo />
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link to="/" className="hover:text-primary transition-colors" activeOptions={{ exact: true }}>Home</Link>
-          <Link to="/shop" className="hover:text-primary transition-colors">Shop</Link>
-          <Link to="/become-rider" className="hover:text-primary transition-colors">Become a rider</Link>
+          <Link
+            to="/"
+            className="hover:text-primary transition-colors"
+            activeOptions={{ exact: true }}
+          >
+            Home
+          </Link>
+          <Link to="/shop" className="hover:text-primary transition-colors">
+            Shop
+          </Link>
+          <Link to="/why-us" className="hover:text-primary transition-colors">
+            Why us
+          </Link>
+          <Link to="/become-rider" className="hover:text-primary transition-colors">
+            Become a rider
+          </Link>
         </nav>
         <div className="flex items-center gap-2">
           <Link to="/cart" className="relative">
@@ -33,15 +46,36 @@ export function SiteHeader() {
           </Link>
           {user ? (
             <>
-              <Button variant="ghost" size="sm" onClick={() => navigate({ to: dashboardFor(roles) })}>Dashboard</Button>
-              <Button variant="outline" size="sm" onClick={async () => { await signOut(); navigate({ to: "/" }); }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate({ to: dashboardFor(roles) })}
+              >
+                Dashboard
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => {
+                  await signOut();
+                  navigate({ to: "/" });
+                }}
+              >
                 <LogOut className="h-4 w-4" />
               </Button>
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/auth" })}>Log in</Button>
-              <Button variant="hero" size="sm" onClick={() => navigate({ to: "/auth", search: { mode: "signup" } as never })}>Get started</Button>
+              <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/auth" })}>
+                Log in
+              </Button>
+              <Button
+                variant="hero"
+                size="sm"
+                onClick={() => navigate({ to: "/auth", search: { mode: "signup" } as never })}
+              >
+                Get started
+              </Button>
             </>
           )}
         </div>

@@ -446,7 +446,16 @@ export type Database = {
         | "rejected"
         | "failed"
       payment_status: "unpaid" | "paid" | "refunded"
-      store_category: "food" | "grocery" | "pharmacy" | "other"
+      store_category:
+        | "bakery"
+        | "coffee"
+        | "convenience"
+        | "flowers"
+        | "food"
+        | "grocery"
+        | "other"
+        | "pets"
+        | "pharmacy"
       store_mode: "manual" | "dashboard"
       vehicle_type: "foot" | "bike" | "motorbike" | "car"
     }
@@ -590,7 +599,17 @@ export const Constants = {
         "failed",
       ],
       payment_status: ["unpaid", "paid", "refunded"],
-      store_category: ["food", "grocery", "pharmacy", "other"],
+      store_category: [
+        "bakery",
+        "coffee",
+        "convenience",
+        "flowers",
+        "food",
+        "grocery",
+        "other",
+        "pets",
+        "pharmacy",
+      ],
       store_mode: ["manual", "dashboard"],
       vehicle_type: ["foot", "bike", "motorbike", "car"],
     },
