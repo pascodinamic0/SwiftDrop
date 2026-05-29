@@ -7,8 +7,13 @@
 // Nitro deploy bundling is opt-in outside Lovable Cloud — required for Vercel.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const isVercelBuild =
+  process.env.VERCEL === "1" ||
+  process.env.VERCEL === "true" ||
+  Boolean(process.env.VERCEL_ENV);
+
 export default defineConfig({
   nitro: {
-    preset: process.env.VERCEL ? "vercel" : "cloudflare-module",
+    preset: isVercelBuild ? "vercel" : "cloudflare-module",
   },
 });
