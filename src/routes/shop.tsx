@@ -18,10 +18,12 @@ import {
   STORE_CATEGORY_META,
   STORE_CATEGORY_ORDER,
   type StoreCategoryId,
-  getStoreCategoryLabel,
   isStoreCategoryId,
 } from "@/lib/store-categories";
-import { ArrowDownAZ, Clock, LayoutGrid, MapPin, Search, Sparkles } from "lucide-react";
+import { getStoreCategoryLabel, getStoreCategoryMeta } from "@/lib/store-categories-i18n";
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "@/i18n/translate";
+import { Clock, LayoutGrid, MapPin, Search, Sparkles, X } from "lucide-react";
 
 export const Route = createFileRoute("/shop")({
   head: () => ({ meta: [{ title: "Browse stores — SwiftDrop" }] }),
@@ -69,7 +71,7 @@ function sortStores(list: StoreRow[], sort: SortKey): StoreRow[] {
   }
 }
 
-function StoreCard({ s }: { s: StoreRow }) {
+function StoreCard({ s, t }: { s: StoreRow; t: TFunction }) {
   return (
     <Link to="/shop/$storeId" params={{ storeId: s.id }}>
       <Card className="overflow-hidden hover:-translate-y-1 hover:shadow-glow transition-all cursor-pointer h-full flex flex-col">
@@ -79,18 +81,18 @@ function StoreCard({ s }: { s: StoreRow }) {
           )}
           {!s.is_open && (
             <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-              <Badge variant="secondary">Closed</Badge>
+              <Badge variant="secondary">{t("common.closed")}</Badge>
             </div>
           )}
           <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
-            {getStoreCategoryLabel(s.category)}
+            {getStoreCategoryLabel(s.category, t)}
           </Badge>
         </div>
         <div className="p-4 flex flex-col flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display text-xl font-bold leading-tight">{s.name}</h3>
             <Badge variant="outline" className="text-xs shrink-0">
-              ${Number(s.delivery_fee).toFixed(2)} delivery
+              {t("shop.deliveryFee", { fee: Number(s.delivery_fee).toFixed(2) })}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1 line-clamp-2 grow">{s.description}</p>
@@ -100,7 +102,7 @@ function StoreCard({ s }: { s: StoreRow }) {
               <span className="truncate">{s.address}</span>
             </span>
             <span className="flex items-center gap-1 shrink-0">
-              <Clock className="h-3 w-3" /> ~30 min
+              <Clock className="h-3 w-3" /> {t("shop.eta")}
             </span>
           </div>
         </div>
@@ -110,6 +112,7 @@ function StoreCard({ s }: { s: StoreRow }) {
 }
 
 function Shop() {
+  const { t } = useTranslation();
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<"all" | StoreCategoryId>("all");
@@ -145,215 +148,172 @@ function Shop() {
         s.name.toLowerCase().includes(needle) ||
         (s.description?.toLowerCase().includes(needle) ?? false) ||
         s.address.toLowerCase().includes(needle) ||
-        getStoreCategoryLabel(s.category).toLowerCase().includes(needle);
+        getStoreCategoryLabel(s.category, t).toLowerCase().includes(needle);
       return catOk && qOk;
     });
-  }, [stores, cat, q]);
+  }, [stores, cat, q, t]);
 
   const sorted = useMemo(() => sortStores(filtered, sort), [filtered, sort]);
 
-  const groupedSections = useMemo(() => {
-    if (cat !== "all") return null;
-    return STORE_CATEGORY_ORDER.map((categoryId) => ({
-      categoryId,
-      stores: sorted.filter((s) => s.category === categoryId),
-    })).filter((g) => g.stores.length > 0);
-  }, [cat, sorted]);
+  const hasFilters = cat !== "all" || q.trim() !== "";
+
+  const clearFilters = () => {
+    setCat("all");
+    setQ("");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
-      <div className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          <div>
-            <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
-              Order from local stores
-            </h1>
-            <p className="text-muted-foreground mt-2 max-w-xl">
-              Pick a category, sort by what matters, and browse stores near you.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center shrink-0">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide hidden sm:block">
-              Sort
-            </span>
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+        <header className="mb-6">
+          <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">
+            {t("shop.title")}
+          </h1>
+          <p className="text-muted-foreground mt-1.5">{t("shop.subtitle")}</p>
+        </header>
+
+        <section
+          className="rounded-2xl border border-border bg-card/60 p-4 md:p-5 space-y-4"
+          aria-label={t("shop.searchAria")}
+        >
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                className="pl-10 h-11"
+                placeholder={t("shop.searchPlaceholder")}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                aria-label={t("shop.searchAria")}
+              />
+            </div>
             <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="w-full sm:w-[220px] h-11">
-                <SelectValue placeholder="Sort" />
+              <SelectTrigger className="w-full sm:w-[200px] h-11 shrink-0">
+                <SelectValue placeholder={t("shop.sort")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="recommended">Open first, then A–Z</SelectItem>
-                <SelectItem value="name_asc">Name A–Z</SelectItem>
-                <SelectItem value="name_desc">Name Z–A</SelectItem>
-                <SelectItem value="fee_asc">Lowest delivery fee</SelectItem>
-                <SelectItem value="fee_desc">Highest delivery fee</SelectItem>
+                <SelectItem value="recommended">{t("shop.sortOpenFirst")}</SelectItem>
+                <SelectItem value="name_asc">{t("shop.sortNameAsc")}</SelectItem>
+                <SelectItem value="name_desc">{t("shop.sortNameDesc")}</SelectItem>
+                <SelectItem value="fee_asc">{t("shop.sortFeeLow")}</SelectItem>
+                <SelectItem value="fee_desc">{t("shop.sortFeeHigh")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
-        </div>
 
-        <div className="mt-8 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-10 h-12 text-base"
-            placeholder="Search by store, address, or category…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            aria-label="Search stores"
-          />
-        </div>
-
-        <section className="mt-8" aria-label="Categories">
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Categories
-            </h2>
-            <span className="text-xs text-muted-foreground">{stores.length} stores</span>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            <button
-              type="button"
+          <div className="flex gap-2 overflow-x-auto pb-0.5 -mx-1 px-1">
+            <CategoryPill
+              active={cat === "all"}
               onClick={() => setCat("all")}
-              className={`rounded-2xl border p-4 text-left transition-all flex flex-col gap-2 min-h-[100px] ${
-                cat === "all"
-                  ? "border-primary bg-primary/10 shadow-glow ring-2 ring-primary/30"
-                  : "border-border bg-card hover:border-primary/40 hover:bg-accent/50"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="h-10 w-10 rounded-xl bg-secondary flex items-center justify-center">
-                  <LayoutGrid className="h-5 w-5 text-primary" />
-                </div>
-                {stores.length > 0 && (
-                  <Badge
-                    variant={cat === "all" ? "default" : "secondary"}
-                    className="shrink-0 text-[10px]"
-                  >
-                    {stores.length}
-                  </Badge>
-                )}
-              </div>
-              <div>
-                <p className="font-display font-semibold text-sm leading-tight">All stores</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                  Everything in your area
-                </p>
-              </div>
-            </button>
-
+              icon={LayoutGrid}
+              label={t("shop.allStores")}
+              count={stores.length}
+            />
             {STORE_CATEGORY_ORDER.map((categoryId) => {
-              const meta = STORE_CATEGORY_META[categoryId];
-              const { Icon } = meta;
+              const catMeta = getStoreCategoryMeta(categoryId, t);
+              const { Icon } = STORE_CATEGORY_META[categoryId];
               const n = counts[categoryId] ?? 0;
-              const active = cat === categoryId;
               return (
-                <button
+                <CategoryPill
                   key={categoryId}
-                  type="button"
+                  active={cat === categoryId}
                   onClick={() => setCat(categoryId)}
-                  className={`rounded-2xl border p-4 text-left transition-all flex flex-col gap-2 min-h-[100px] ${
-                    active
-                      ? "border-primary bg-primary/10 shadow-glow ring-2 ring-primary/30"
-                      : "border-border bg-card hover:border-primary/40 hover:bg-accent/50"
-                  } ${n === 0 ? "opacity-60" : ""}`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="h-10 w-10 rounded-xl bg-primary/15 flex items-center justify-center">
-                      <Icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <Badge
-                      variant={active ? "default" : "secondary"}
-                      className="shrink-0 text-[10px]"
-                    >
-                      {n}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="font-display font-semibold text-sm leading-tight">{meta.label}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                      {meta.description}
-                    </p>
-                  </div>
-                </button>
+                  icon={Icon}
+                  label={catMeta.shortLabel}
+                  count={n}
+                  dimmed={n === 0}
+                />
               );
             })}
           </div>
         </section>
 
+        {!loading && (
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-6 mb-4">
+            <p className="text-sm text-muted-foreground">
+              {hasFilters
+                ? t("shop.resultsFiltered", { count: sorted.length })
+                : t("shop.storesCount", { count: sorted.length })}
+            </p>
+            {hasFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                <X className="h-3.5 w-3.5" />
+                {t("shop.clearFilters")}
+              </button>
+            )}
+          </div>
+        )}
+
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <Card key={i} className="h-64 animate-pulse bg-muted" />
             ))}
           </div>
         ) : sorted.length === 0 ? (
-          <Card className="p-12 text-center text-muted-foreground mt-10 space-y-2">
+          <Card className="p-12 text-center text-muted-foreground space-y-2">
             <Sparkles className="h-10 w-10 mx-auto opacity-40" />
-            <p>No stores match your filters.</p>
-            {(cat !== "all" || q) && (
+            <p>{t("shop.noMatch")}</p>
+            {hasFilters && (
               <button
                 type="button"
                 className="text-primary font-semibold text-sm hover:underline"
-                onClick={() => {
-                  setCat("all");
-                  setQ("");
-                }}
+                onClick={clearFilters}
               >
-                Clear filters
+                {t("shop.clearFilters")}
               </button>
             )}
           </Card>
-        ) : cat === "all" && groupedSections && groupedSections.length > 1 ? (
-          <div className="mt-10 space-y-12">
-            {groupedSections.map(({ categoryId, stores: sectionStores }) => {
-              const meta = STORE_CATEGORY_META[categoryId];
-              return (
-                <section key={categoryId} aria-labelledby={`cat-${categoryId}`}>
-                  <div className="flex flex-wrap items-baseline justify-between gap-3 mb-4 border-b border-border pb-3">
-                    <div className="flex items-center gap-2">
-                      <meta.Icon className="h-5 w-5 text-primary" />
-                      <h2 id={`cat-${categoryId}`} className="font-display text-2xl font-bold">
-                        {meta.label}
-                      </h2>
-                      <Badge variant="outline">{sectionStores.length}</Badge>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setCat(categoryId)}
-                      className="text-sm font-medium text-primary hover:underline"
-                    >
-                      Only this category
-                    </button>
-                  </div>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {sectionStores.map((s) => (
-                      <StoreCard key={s.id} s={s} />
-                    ))}
-                  </div>
-                </section>
-              );
-            })}
-          </div>
         ) : (
-          <div className="mt-10">
-            {cat !== "all" && (
-              <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-                <ArrowDownAZ className="h-4 w-4" />
-                <span>
-                  Showing {sorted.length} in{" "}
-                  <strong className="text-foreground">{getStoreCategoryLabel(cat)}</strong>
-                </span>
-              </div>
-            )}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {sorted.map((s) => (
-                <StoreCard key={s.id} s={s} />
-              ))}
-            </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {sorted.map((s) => (
+              <StoreCard key={s.id} s={s} t={t} />
+            ))}
           </div>
         )}
-      </div>
+      </main>
       <SiteFooter />
     </div>
+  );
+}
+
+function CategoryPill({
+  active,
+  onClick,
+  icon: Icon,
+  label,
+  count,
+  dimmed,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  count: number;
+  dimmed?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors shrink-0 ${
+        active
+          ? "border-primary bg-primary text-primary-foreground"
+          : "border-border bg-background hover:border-primary/40 hover:bg-accent/50"
+      } ${dimmed && !active ? "opacity-50" : ""}`}
+    >
+      <Icon className="h-3.5 w-3.5 shrink-0" />
+      {label}
+      {count > 0 && (
+        <span className={`text-xs ${active ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+          {count}
+        </span>
+      )}
+    </button>
   );
 }

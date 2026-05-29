@@ -9,9 +9,11 @@ import { useTranslation } from "@/i18n";
 import type { TFunction } from "@/i18n/translate";
 
 function getAdminPageMeta(pathname: string, t: TFunction) {
+  if (/^\/admin\/stores\/[^/]+$/.test(pathname)) {
+    return { title: t("admin.productsTitle"), description: t("admin.console") };
+  }
   const pages: Record<string, { title: string; description: string }> = {
     "/admin": { title: t("admin.overview"), description: t("admin.console") },
-    "/admin/orders": { title: t("admin.orders"), description: t("admin.console") },
     "/admin/stores": { title: t("admin.stores"), description: t("admin.console") },
     "/admin/users": { title: t("admin.users"), description: t("admin.console") },
     "/admin/riders": { title: t("admin.riders"), description: t("admin.console") },

@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "@/i18n";
 
 export const Route = createFileRoute("/vendor/menu")({
   component: VendorMenu,
@@ -39,6 +40,7 @@ interface Item {
 }
 
 function VendorMenu() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [storeId, setStoreId] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -70,9 +72,10 @@ function VendorMenu() {
     (async () => {
       const { data } = await supabase
         .from("stores")
-        .select("id, mode")
+        .select("id")
         .eq("owner_id", user.id)
-        .eq("mode", "dashboard")
+        .order("applied_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
       const sid = (data as { id: string } | null)?.id ?? null;
       setStoreId(sid);
@@ -83,19 +86,19 @@ function VendorMenu() {
   }, [user]);
 
   const addCategory = async () => {
-    if (!storeId || !catName.trim()) return toast.error("Category name required");
+    if (!storeId || !catName.trim()) return toast.error(t("vendor.categoryRequired"));
     const sort_order = categories.length;
     const { error } = await supabase
       .from("menu_categories")
       .insert({ store_id: storeId, name: catName.trim(), sort_order });
     if (error) return toast.error(error.message);
-    toast.success("Category added");
+    toast.success(t("vendor.categoryAdded"));
     setCatName("");
     loadCategories(storeId);
   };
 
   const removeCategory = async (id: string) => {
-    if (!confirm("Delete this category? Items will become uncategorized.")) return;
+    if (!confirm(t("vendor.deleteCategoryConfirm"))) return;
     const { error } = await supabase.from("menu_categories").delete().eq("id", id);
     if (error) return toast.error(error.message);
     if (storeId) {
@@ -105,7 +108,7 @@ function VendorMenu() {
   };
 
   const addItem = async () => {
-    if (!storeId || !name || !price) return toast.error("Name and price required");
+    if (!storeId || !name || !price) return toast.error(t("vendor.itemRequired"));
     const { error } = await supabase.from("menu_items").insert({
       store_id: storeId,
       name,
@@ -115,7 +118,7 @@ function VendorMenu() {
       category_id: itemCategoryId || null,
     });
     if (error) return toast.error(error.message);
-    toast.success("Item added");
+    toast.success(t("vendor.itemAdded"));
     setName("");
     setDesc("");
     setPrice("");
@@ -131,7 +134,7 @@ function VendorMenu() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Delete this item?")) return;
+    if (!confirm(t("vendor.deleteItemConfirm"))) return;
     const { error } = await supabase.from("menu_items").delete().eq("id", id);
     if (error) return toast.error(error.message);
     if (storeId) loadItems(storeId);
@@ -140,29 +143,29 @@ function VendorMenu() {
   if (!storeId) {
     return (
       <div className="container mx-auto px-4 py-12 text-center text-muted-foreground">
-        No dashboard store linked to your account.
+        {t("vendor.noDashboardStore")}
       </div>
     );
   }
 
   const categoryLabel = (categoryId: string | null) =>
-    categories.find((c) => c.id === categoryId)?.name ?? "Uncategorized";
+    categories.find((c) => c.id === categoryId)?.name ?? t("vendor.uncategorized");
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
-      <h1 className="font-display text-2xl font-bold">Menu</h1>
+      <h1 className="font-display text-2xl font-bold">{t("vendor.menu")}</h1>
 
       <Card className="mt-4 p-5">
-        <h2 className="font-semibold mb-3">Categories</h2>
+        <h2 className="font-semibold mb-3">{t("vendor.categories")}</h2>
         <div className="flex gap-2 flex-wrap">
           <Input
             className="max-w-xs"
             value={catName}
             onChange={(e) => setCatName(e.target.value)}
-            placeholder="e.g. Mains"
+            placeholder={t("vendor.placeholderCategory")}
           />
           <Button variant="hero" onClick={addCategory}>
-            <Plus className="h-4 w-4" /> Add category
+            <Plus className="h-4 w-4" /> {t("vendor.addCategory")}
           </Button>
         </div>
         <ul className="mt-3 space-y-1">
@@ -175,20 +178,20 @@ function VendorMenu() {
             </li>
           ))}
           {categories.length === 0 && (
-            <p className="text-xs text-muted-foreground">No categories yet.</p>
+            <p className="text-xs text-muted-foreground">{t("vendor.noCategories")}</p>
           )}
         </ul>
       </Card>
 
       <Card className="mt-4 p-5">
-        <h2 className="font-semibold mb-3">Add new item</h2>
+        <h2 className="font-semibold mb-3">{t("vendor.addItem")}</h2>
         <div className="grid md:grid-cols-2 gap-3">
           <div>
-            <Label>Name</Label>
+            <Label>{t("vendor.name")}</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <Label>Price</Label>
+            <Label>{t("vendor.price")}</Label>
             <Input
               type="number"
               step="0.01"
@@ -197,16 +200,16 @@ function VendorMenu() {
             />
           </div>
           <div>
-            <Label>Category</Label>
+            <Label>{t("vendor.category")}</Label>
             <Select
               value={itemCategoryId || "__none__"}
               onValueChange={(v) => setItemCategoryId(v === "__none__" ? "" : v)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Optional" />
+                <SelectValue placeholder={t("vendor.placeholderOptional")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__none__">Uncategorized</SelectItem>
+                <SelectItem value="__none__">{t("vendor.uncategorized")}</SelectItem>
                 {categories.map((c) => (
                   <SelectItem key={c.id} value={c.id}>
                     {c.name}
@@ -216,11 +219,11 @@ function VendorMenu() {
             </Select>
           </div>
           <div className="md:col-span-2">
-            <Label>Description</Label>
+            <Label>{t("vendor.description")}</Label>
             <Textarea rows={2} value={desc} onChange={(e) => setDesc(e.target.value)} />
           </div>
           <div className="md:col-span-2">
-            <Label>Image URL (optional)</Label>
+            <Label>{t("vendor.imageUrl")}</Label>
             <Input
               value={img}
               onChange={(e) => setImg(e.target.value)}
@@ -229,11 +232,11 @@ function VendorMenu() {
           </div>
         </div>
         <Button variant="hero" className="mt-4" onClick={addItem}>
-          <Plus className="h-4 w-4" /> Add item
+          <Plus className="h-4 w-4" /> {t("common.add")}
         </Button>
       </Card>
 
-      <h2 className="font-display text-xl font-bold mt-8">All items ({items.length})</h2>
+      <h2 className="font-display text-xl font-bold mt-8">{t("vendor.allItems", { count: items.length })}</h2>
       <div className="mt-3 space-y-2">
         {items.map((it) => (
           <Card key={it.id} className="p-3 flex items-center gap-3">
@@ -249,7 +252,7 @@ function VendorMenu() {
             </div>
             <div className="font-display font-bold">${Number(it.price).toFixed(2)}</div>
             <div className="flex items-center gap-1">
-              <span className="text-xs text-muted-foreground">Avail.</span>
+              <span className="text-xs text-muted-foreground">{t("vendor.avail")}</span>
               <Switch
                 checked={it.is_available}
                 onCheckedChange={(v) => toggleAvail(it.id, v)}

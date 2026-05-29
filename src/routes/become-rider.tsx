@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "@/i18n/translate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Card } from "@/components/ui/card";
@@ -28,21 +30,27 @@ export const Route = createFileRoute("/become-rider")({
   component: BecomeRider,
 });
 
-const applicationSchema = z.object({
-  fullName: z.string().trim().min(2, "Enter your full legal name").max(100),
-  phone: z.string().trim().min(7, "Enter a valid phone number").max(20),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  homeAddress: z.string().trim().min(5, "Enter your home address").max(200),
-  city: z.string().trim().min(2, "Enter your city").max(80),
-  governmentId: z.string().trim().min(4, "Enter a government ID number").max(40),
-  emergencyContactName: z.string().trim().min(2, "Emergency contact name is required").max(100),
-  emergencyContactPhone: z.string().trim().min(7, "Emergency contact phone is required").max(20),
-  licensePlate: z.string().trim().max(20).optional(),
-  applicationNotes: z.string().trim().max(500).optional(),
-  termsAccepted: z.literal(true, { errorMap: () => ({ message: "You must accept the terms" }) }),
-});
+function applicationSchema(t: TFunction) {
+  return z.object({
+    fullName: z.string().trim().min(2, t("rider.validation.fullName")).max(100),
+    phone: z.string().trim().min(7, t("rider.validation.phone")).max(20),
+    dateOfBirth: z.string().min(1, t("rider.validation.dob")),
+    homeAddress: z.string().trim().min(5, t("rider.validation.address")).max(200),
+    city: z.string().trim().min(2, t("rider.validation.city")).max(80),
+    governmentId: z.string().trim().min(4, t("rider.validation.govId")).max(40),
+    emergencyContactName: z.string().trim().min(2, t("rider.validation.emergencyName")).max(100),
+    emergencyContactPhone: z.string().trim().min(7, t("rider.validation.emergencyPhone")).max(20),
+    licensePlate: z.string().trim().max(20).optional(),
+    applicationNotes: z.string().trim().max(500).optional(),
+    termsAccepted: z.literal(true, {
+      errorMap: () => ({ message: t("rider.validation.terms") }),
+    }),
+  });
+}
 
 function BecomeRider() {
+  const { t } = useTranslation();
+  const schema = useMemo(() => applicationSchema(t), [t]);
   const { user, roles, refreshRoles } = useAuth();
   const { profile, loading: profileLoading, refresh: refreshProfile } = useRiderProfile();
   const navigate = useNavigate();
@@ -97,7 +105,7 @@ function BecomeRider() {
     }
 
     const needsVehicleId = vehicle === "motorbike" || vehicle === "car";
-    const parsed = applicationSchema.safeParse({
+    const parsed = schema.safeParse({
       fullName,
       phone,
       dateOfBirth,
@@ -117,7 +125,7 @@ function BecomeRider() {
     }
 
     if (needsVehicleId && !licensePlate.trim()) {
-      toast.error("License plate is required for motorbike and car");
+      toast.error(t("rider.validation.licensePlate"));
       return;
     }
 
@@ -158,10 +166,10 @@ function BecomeRider() {
 
       await refreshRoles();
       await refreshProfile();
-      toast.success("Application submitted! We'll review your details shortly.");
+      toast.success(t("rider.applicationSubmitted"));
       navigate({ to: "/rider" });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to submit application");
+      toast.error(err instanceof Error ? err.message : t("rider.submitFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -178,22 +186,20 @@ function BecomeRider() {
             <Bike className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
-            Join the SwiftDrop fleet
+            {t("rider.joinFleet")}
           </h1>
-          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-            Apply with your details. After verification you can browse and accept delivery jobs near you.
-          </p>
+          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">{t("rider.joinSubtitle")}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 mt-10">
           {[
-            { i: DollarSign, t: "Cash in hand", d: "Customers pay you directly on delivery." },
-            { i: Clock, t: "Flexible hours", d: "Go online only when you're free to work." },
-            { i: ShieldCheck, t: "Verified riders", d: "We review every application before you take jobs." },
+            { i: DollarSign, title: t("rider.benefitCash"), d: t("rider.benefitCashDesc") },
+            { i: Clock, title: t("rider.benefitHours"), d: t("rider.benefitHoursDesc") },
+            { i: ShieldCheck, title: t("rider.benefitVerified"), d: t("rider.benefitVerifiedDesc") },
           ].map((f) => (
-            <Card key={f.t} className="p-5">
+            <Card key={f.title} className="p-5">
               <f.i className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold mt-2">{f.t}</h3>
+              <h3 className="font-semibold mt-2">{f.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{f.d}</p>
             </Card>
           ))}
@@ -201,96 +207,93 @@ function BecomeRider() {
 
         <Card className="p-6 mt-8 max-w-2xl mx-auto">
           {profileLoading ? (
-            <p className="text-center text-muted-foreground">Loading...</p>
+            <p className="text-center text-muted-foreground">{t("common.loadingShort")}</p>
           ) : isRider && verified ? (
             <>
-              <h2 className="font-display text-2xl font-bold">You're a verified rider</h2>
-              <p className="text-sm text-muted-foreground mt-2">
-                Open the job portal to see available deliveries and manage active runs.
-              </p>
+              <h2 className="font-display text-2xl font-bold">{t("rider.verifiedTitle")}</h2>
+              <p className="text-sm text-muted-foreground mt-2">{t("rider.verifiedDesc")}</p>
               <Button variant="hero" size="lg" className="w-full mt-4" onClick={() => navigate({ to: "/rider" })}>
-                Open job portal
+                {t("rider.openPortal")}
               </Button>
             </>
           ) : isRider && profile?.verification_status === "pending" ? (
             <>
-              <h2 className="font-display text-2xl font-bold">Application submitted</h2>
-              <p className="text-sm text-muted-foreground mt-2">
-                Your account is in probation while we verify your details. You'll be notified once approved.
-              </p>
+              <h2 className="font-display text-2xl font-bold">{t("rider.submittedTitle")}</h2>
+              <p className="text-sm text-muted-foreground mt-2">{t("rider.submittedDesc")}</p>
               <Button variant="hero" size="lg" className="w-full mt-4" onClick={() => navigate({ to: "/rider" })}>
-                View application status
+                {t("rider.viewStatus")}
               </Button>
             </>
           ) : showApplicationForm ? (
             <>
               <h2 className="font-display text-2xl font-bold">
-                {canReapply ? "Update your application" : "Rider application"}
+                {canReapply ? t("rider.updateApplication") : t("rider.applicationTitle")}
               </h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                All fields are required unless marked optional. Applications are reviewed within 1–2 business days.
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">{t("rider.formIntro")}</p>
 
               <div className="mt-6 grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="fullName">Full legal name</Label>
+                  <Label htmlFor="fullName">{t("auth.fullLegalName")}</Label>
                   <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone number</Label>
+                  <Label htmlFor="phone">{t("auth.phone")}</Label>
                   <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="dob">Date of birth</Label>
+                  <Label htmlFor="dob">{t("rider.dateOfBirth")}</Label>
                   <Input id="dob" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="homeAddress">Home address</Label>
+                  <Label htmlFor="homeAddress">{t("rider.homeAddress")}</Label>
                   <Input id="homeAddress" value={homeAddress} onChange={(e) => setHomeAddress(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">{t("rider.city")}</Label>
                   <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="governmentId">Government ID number</Label>
+                  <Label htmlFor="governmentId">{t("rider.governmentId")}</Label>
                   <Input id="governmentId" value={governmentId} onChange={(e) => setGovernmentId(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label>Vehicle type</Label>
+                  <Label>{t("rider.vehicleType")}</Label>
                   <Select value={vehicle} onValueChange={(v) => setVehicle(v as typeof vehicle)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="foot">On foot</SelectItem>
-                      <SelectItem value="bike">Bicycle</SelectItem>
-                      <SelectItem value="motorbike">Motorbike</SelectItem>
-                      <SelectItem value="car">Car</SelectItem>
+                      {(["foot", "bike", "motorbike", "car"] as const).map((v) => (
+                        <SelectItem key={v} value={v}>
+                          {t(`rider.vehicle.${v}`)}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="licensePlate">
-                    License plate {(vehicle === "motorbike" || vehicle === "car") ? "" : "(optional)"}
+                    {(vehicle === "motorbike" || vehicle === "car")
+                      ? t("rider.licensePlate")
+                      : t("rider.licensePlateOptional")}
                   </Label>
                   <Input id="licensePlate" value={licensePlate} onChange={(e) => setLicensePlate(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="emergencyName">Emergency contact name</Label>
+                  <Label htmlFor="emergencyName">{t("rider.emergencyName")}</Label>
                   <Input id="emergencyName" value={emergencyContactName} onChange={(e) => setEmergencyContactName(e.target.value)} required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="emergencyPhone">Emergency contact phone</Label>
+                  <Label htmlFor="emergencyPhone">{t("rider.emergencyPhone")}</Label>
                   <Input id="emergencyPhone" value={emergencyContactPhone} onChange={(e) => setEmergencyContactPhone(e.target.value)} required />
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor="notes">Additional notes (optional)</Label>
+                  <Label htmlFor="notes">{t("rider.additionalNotes")}</Label>
                   <Textarea
                     id="notes"
                     value={applicationNotes}
                     onChange={(e) => setApplicationNotes(e.target.value)}
-                    placeholder="Previous delivery experience, availability, etc."
+                    placeholder={t("rider.notesPlaceholder")}
                     rows={3}
                   />
                 </div>
@@ -303,8 +306,7 @@ function BecomeRider() {
                   onCheckedChange={(v) => setTermsAccepted(v === true)}
                 />
                 <Label htmlFor="terms" className="text-sm leading-relaxed font-normal">
-                  I confirm the information above is accurate and I agree to SwiftDrop's rider terms, background
-                  checks, and probation review process.
+                  {t("rider.termsCheckbox")}
                 </Label>
               </div>
 
@@ -315,13 +317,17 @@ function BecomeRider() {
                 onClick={submitApplication}
                 disabled={submitting}
               >
-                {submitting ? "Submitting..." : user ? "Submit application" : "Create rider account"}
+                {submitting
+                  ? t("common.submittingDots")
+                  : user
+                    ? t("rider.submitApplication")
+                    : t("auth.createRiderAccount")}
               </Button>
               {!user && (
                 <p className="text-center text-sm text-muted-foreground mt-3">
-                  Already have a rider account?{" "}
+                  {t("rider.alreadyRider")}{" "}
                   <Link to="/auth/rider" className="text-primary font-semibold hover:underline">
-                    Sign in
+                    {t("auth.signIn")}
                   </Link>
                 </p>
               )}

@@ -13,6 +13,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useTranslation } from "@/i18n";
 import heroImg from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -30,6 +31,21 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { t } = useTranslation();
+
+  const features = [
+    { icon: Store, title: t("home.feature1Title"), desc: t("home.feature1Desc") },
+    { icon: ShoppingBag, title: t("home.feature2Title"), desc: t("home.feature2Desc") },
+    { icon: ShieldCheck, title: t("home.feature3Title"), desc: t("home.feature3Desc") },
+  ];
+
+  const pillars = [
+    { icon: Store, title: t("home.pillar1Title"), desc: t("home.pillar1Desc") },
+    { icon: BadgeCheck, title: t("home.pillar2Title"), desc: t("home.pillar2Desc") },
+    { icon: HeartHandshake, title: t("home.pillar3Title"), desc: t("home.pillar3Desc") },
+    { icon: ShieldCheck, title: t("home.pillar4Title"), desc: t("home.pillar4Desc") },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
@@ -40,31 +56,28 @@ function Home() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium mb-6">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" /> Now open in your neighborhood
+                  <Sparkles className="h-3.5 w-3.5 text-primary" /> {t("home.badge")}
                 </div>
                 <h1 className="text-balance text-5xl md:text-7xl font-display font-bold leading-[0.95] tracking-tighter">
-                  Hot meals.
+                  {t("home.title1")}
                   <br />
                   <span className="relative inline-block">
-                    <span className="relative z-10">Fresh groceries.</span>
+                    <span className="relative z-10">{t("home.title2")}</span>
                     <span className="absolute bottom-2 left-0 right-0 h-3 md:h-5 bg-primary -z-0 -skew-x-6" />
                   </span>
                   <br />
-                  At your door.
+                  {t("home.title3")}
                 </h1>
-                <p className="mt-6 text-lg text-muted-foreground max-w-md">
-                  SwiftDrop connects you with local restaurants, groceries and pharmacies. Pay for
-                  items upfront, settle the delivery fee in cash on arrival.
-                </p>
+                <p className="mt-6 text-lg text-muted-foreground max-w-md">{t("home.subtitle")}</p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link to="/shop">
                     <Button variant="hero" size="xl">
-                      Browse stores <ArrowRight className="h-5 w-5" />
+                      {t("home.browseStores")} <ArrowRight className="h-5 w-5" />
                     </Button>
                   </Link>
                   <Link to="/auth/rider" search={{ mode: "signup" }}>
                     <Button variant="dark" size="xl">
-                      <Bike className="h-5 w-5" /> Become a rider
+                      <Bike className="h-5 w-5" /> {t("home.becomeRider")}
                     </Button>
                   </Link>
                 </div>
@@ -74,7 +87,7 @@ function Home() {
                 <div className="relative rounded-3xl overflow-hidden shadow-card border border-border bg-card">
                   <img
                     src={heroImg}
-                    alt="Local courier delivering food"
+                    alt={t("home.heroAlt")}
                     width={1536}
                     height={1152}
                     className="w-full h-auto"
@@ -87,23 +100,7 @@ function Home() {
 
         <section className="container mx-auto px-4 py-20">
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Store,
-                title: "Local stores",
-                desc: "Hundreds of restaurants, groceries and pharmacies near you.",
-              },
-              {
-                icon: ShoppingBag,
-                title: "Pay smart",
-                desc: "Items prepaid, delivery in cash. No surprises.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Live updates",
-                desc: "Track every order from kitchen to doorstep.",
-              },
-            ].map((f) => (
+            {features.map((f) => (
               <div
                 key={f.title}
                 className="rounded-2xl border border-border bg-card p-6 shadow-card hover:-translate-y-1 hover:shadow-glow transition-all"
@@ -122,42 +119,18 @@ function Home() {
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10">
             <div className="max-w-xl">
               <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight">
-                Why buy from us?
+                {t("home.whyTitle")}
               </h2>
-              <p className="mt-3 text-muted-foreground text-lg">
-                Local choice, clear pricing, and delivery that stays in sync from checkout to your
-                door — without the fine-print surprises.
-              </p>
+              <p className="mt-3 text-muted-foreground text-lg">{t("home.whySubtitle")}</p>
             </div>
             <Link to="/why-us">
               <Button variant="outline" size="lg" className="shrink-0">
-                See all reasons <ArrowRight className="h-4 w-4" />
+                {t("home.seeAllReasons")} <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                icon: Store,
-                title: "Neighbor businesses",
-                desc: "Restaurants, groceries, and pharmacies you can actually visit — now reachable in a few taps.",
-              },
-              {
-                icon: BadgeCheck,
-                title: "Fees you see upfront",
-                desc: "Item totals and delivery before you pay. Know what's prepaid and what's cash on arrival.",
-              },
-              {
-                icon: HeartHandshake,
-                title: "Humans on both ends",
-                desc: "Stores prep your order; riders bring it home. Our job is to keep everyone aligned.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Track every step",
-                desc: "Confirmation, prep, pickup, en route — stay in the loop instead of guessing.",
-              },
-            ].map((item) => (
+            {pillars.map((item) => (
               <div
                 key={item.title}
                 className="rounded-2xl border border-border bg-card p-5 shadow-card hover:-translate-y-0.5 hover:shadow-glow transition-all"
@@ -176,15 +149,15 @@ function Home() {
           <div className="rounded-3xl gradient-dark p-10 md:p-16 text-center text-secondary-foreground relative overflow-hidden">
             <div className="absolute inset-0 bg-grid opacity-10" />
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight relative">
-              Hungry yet? <span className="text-primary">Let's go.</span>
+              {t("home.ctaTitle")} <span className="text-primary">{t("home.ctaHighlight")}</span>
             </h2>
             <p className="mt-4 text-secondary-foreground/70 max-w-xl mx-auto relative">
-              Browse stores, fill your cart, and we'll handle the rest.
+              {t("home.ctaSubtitle")}
             </p>
             <div className="mt-8 flex justify-center gap-3 relative">
               <Link to="/shop">
                 <Button variant="hero" size="xl">
-                  Start ordering <Zap className="h-5 w-5" />
+                  {t("home.startOrdering")} <Zap className="h-5 w-5" />
                 </Button>
               </Link>
             </div>

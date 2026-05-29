@@ -1,7 +1,8 @@
 export const shopFr = {
   metaTitle: "Parcourir les boutiques — SwiftDrop",
-  title: "Commander auprès de commerces locaux",
-  subtitle: "Choisissez une catégorie, triez et parcourez les boutiques près de chez vous.",
+  title: "Commerces locaux",
+  subtitle: "Parcourez les boutiques près de chez vous.",
+  resultsFiltered: "{count} résultat(s)",
   sort: "Trier",
   sortOpenFirst: "Ouverts d'abord, puis A–Z",
   sortNameAsc: "Nom A–Z",

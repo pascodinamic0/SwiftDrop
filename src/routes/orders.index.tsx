@@ -6,6 +6,7 @@ import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { RequireRole } from "@/components/RoleRouter";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 import { Card } from "@/components/ui/card";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 
@@ -29,6 +30,7 @@ interface OrderRow {
 }
 
 function OrdersList() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [storeNames, setStoreNames] = useState<Record<string, string>>({});
@@ -59,12 +61,12 @@ function OrdersList() {
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
       <div className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
-        <h1 className="font-display text-3xl font-bold">My orders</h1>
+        <h1 className="font-display text-3xl font-bold">{t("order.myOrders")}</h1>
         {orders.length === 0 ? (
           <Card className="mt-6 p-12 text-center text-muted-foreground">
-            No orders yet.{" "}
+            {t("order.noOrders")}{" "}
             <Link to="/shop" className="text-primary font-semibold">
-              Browse stores
+              {t("order.browseStores")}
             </Link>
           </Card>
         ) : (
@@ -77,7 +79,9 @@ function OrdersList() {
                       <OrderStatusBadge status={o.status} />
                       <span className="text-xs text-muted-foreground">#{o.id.slice(0, 8)}</span>
                     </div>
-                    <p className="mt-1 font-medium truncate">{storeNames[o.store_id] ?? "Store"}</p>
+                    <p className="mt-1 font-medium truncate">
+                      {storeNames[o.store_id] ?? t("common.store")}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(o.created_at).toLocaleString()}
                     </p>

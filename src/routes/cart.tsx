@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "@/i18n";
+import type { TFunction } from "@/i18n/translate";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
@@ -24,14 +26,18 @@ export const Route = createFileRoute("/cart")({
   ),
 });
 
-const checkoutSchema = z.object({
-  name: z.string().trim().min(1).max(100),
-  phone: z.string().trim().min(7).max(20),
-  address: z.string().trim().min(3).max(300),
-  notes: z.string().max(500).optional(),
-});
+function checkoutSchema(t: TFunction) {
+  return z.object({
+    name: z.string().trim().min(1, t("rider.validation.fullName")).max(100),
+    phone: z.string().trim().min(7, t("rider.validation.phone")).max(20),
+    address: z.string().trim().min(3, t("rider.validation.address")).max(300),
+    notes: z.string().max(500).optional(),
+  });
+}
 
 function CartPage() {
+  const { t } = useTranslation();
+  const schema = useMemo(() => checkoutSchema(t), [t]);
   const { items, storeId, storeName, subtotal, updateQty, removeItem, clear } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -71,10 +77,10 @@ function CartPage() {
       return;
     }
     if (!storeId || items.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error(t("cart.emptyToast"));
       return;
     }
-    const parsed = checkoutSchema.safeParse({ name, phone, address, notes: notes || undefined });
+    const parsed = schema.safeParse({ name, phone, address, notes: notes || undefined });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -113,11 +119,11 @@ function CartPage() {
       const { error: e2 } = await supabase.from("order_items").insert(lineItems);
       if (e2) throw e2;
 
-      toast.success("Order placed! Awaiting store confirmation.");
+      toast.success(t("cart.orderPlaced"));
       clear();
       navigate({ to: "/orders/$id", params: { id: orderId } });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to place order");
+      toast.error(err instanceof Error ? err.message : t("cart.orderFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -131,11 +137,11 @@ function CartPage() {
           <div className="h-20 w-20 mx-auto rounded-full bg-muted flex items-center justify-center">
             <ShoppingBag className="h-10 w-10 text-muted-foreground" />
           </div>
-          <h1 className="mt-6 font-display text-3xl font-bold">Your cart is empty</h1>
-          <p className="text-muted-foreground mt-2">Browse stores and add some items.</p>
+          <h1 className="mt-6 font-display text-3xl font-bold">{t("cart.emptyTitle")}</h1>
+          <p className="text-muted-foreground mt-2">{t("cart.emptyDesc")}</p>
           <Link to="/shop">
             <Button variant="hero" size="lg" className="mt-6">
-              Browse stores
+              {t("order.browseStores")}
             </Button>
           </Link>
         </div>
@@ -150,9 +156,9 @@ function CartPage() {
       <div className="flex-1 container mx-auto px-4 py-8 grid lg:grid-cols-[1fr_400px] gap-6">
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h1 className="font-display text-3xl font-bold">Your cart</h1>
+            <h1 className="font-display text-3xl font-bold">{t("cart.title")}</h1>
             <span className="text-sm text-muted-foreground">
-              From <span className="font-semibold text-foreground">{storeName}</span>
+              {t("cart.fromStore", { name: storeName ?? "" })}
             </span>
           </div>
           <div className="space-y-3">
@@ -167,7 +173,9 @@ function CartPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold truncate">{i.name}</h3>
-                  <p className="text-sm text-muted-foreground">${i.price.toFixed(2)} each</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("cart.each", { price: i.price.toFixed(2) })}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
@@ -200,39 +208,39 @@ function CartPage() {
         </div>
 
         <Card className="p-6 h-fit lg:sticky lg:top-20">
-          <h2 className="font-display text-2xl font-bold">Checkout</h2>
+          <h2 className="font-display text-2xl font-bold">{t("cart.checkout")}</h2>
           <div className="mt-4 space-y-3">
             <div>
-              <Label>Full name</Label>
+              <Label>{t("cart.fullName")}</Label>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Alex Rivera"
+                placeholder={t("cart.placeholderName")}
               />
             </div>
             <div>
-              <Label>Phone</Label>
+              <Label>{t("cart.phone")}</Label>
               <Input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+254 700 000 000"
+                placeholder={t("cart.placeholderPhone")}
               />
             </div>
             <div>
-              <Label>Delivery address</Label>
+              <Label>{t("cart.address")}</Label>
               <Textarea
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="123 Main St, Apt 4B"
+                placeholder={t("cart.placeholderAddress")}
                 rows={2}
               />
             </div>
             <div>
-              <Label>Notes (optional)</Label>
+              <Label>{t("cart.notes")}</Label>
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Ring twice…"
+                placeholder={t("cart.placeholderNotes")}
                 rows={2}
               />
             </div>
@@ -240,15 +248,15 @@ function CartPage() {
 
           <div className="mt-5 rounded-xl bg-secondary text-secondary-foreground p-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="opacity-70">Subtotal (prepaid)</span>
+              <span className="opacity-70">{t("cart.subtotal")}</span>
               <span className="font-semibold">${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="opacity-70">Delivery fee (cash)</span>
+              <span className="opacity-70">{t("cart.deliveryFee")}</span>
               <span className="font-semibold">${deliveryFee.toFixed(2)}</span>
             </div>
             <div className="border-t border-secondary-foreground/20 pt-2 flex justify-between items-baseline">
-              <span className="text-xs opacity-70">Total</span>
+              <span className="text-xs opacity-70">{t("cart.total")}</span>
               <span className="font-display text-3xl font-bold text-primary">
                 ${total.toFixed(2)}
               </span>
@@ -256,9 +264,7 @@ function CartPage() {
           </div>
 
           <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-            Items will be prepaid after the store confirms availability. Pay{" "}
-            <strong className="text-foreground">${deliveryFee.toFixed(2)} in cash</strong> to the
-            rider on delivery.
+            {t("cart.paymentNote", { fee: `$${deliveryFee.toFixed(2)}` })}
           </p>
 
           <Button
@@ -268,7 +274,7 @@ function CartPage() {
             onClick={placeOrder}
             disabled={submitting}
           >
-            {submitting ? "Placing order…" : "Place order"}
+            {submitting ? t("common.placingOrder") : t("cart.placeOrder")}
           </Button>
         </Card>
       </div>

@@ -1,0 +1,51 @@
+export const merchantEn = {
+  becomeMetaTitle: "Become a merchant — SwiftDrop",
+  joinTitle: "Open your store on SwiftDrop",
+  joinSubtitle:
+    "Apply with your business details. After admin approval your store goes live and you manage menu and orders from your dashboard.",
+  benefit1Title: "Your dashboard",
+  benefit1Desc: "Upload products, track orders, and manage your store in one place.",
+  benefit2Title: "Review first",
+  benefit2Desc: "We verify every business before customers can order from you.",
+  benefit3Title: "Go live",
+  benefit3Desc: "Once approved, your store appears in the marketplace.",
+  applicationTitle: "Store application",
+  updateApplication: "Update your application",
+  formIntro:
+    "All fields are required unless marked optional. Applications are reviewed within 1–2 business days.",
+  storeName: "Store name",
+  contactPhone: "Business phone",
+  deliveryFee: "Delivery fee ($)",
+  termsCheckbox:
+    "I confirm the information is accurate and I agree to SwiftDrop merchant terms and the review process.",
+  submitApplication: "Submit application",
+  alreadyMerchant: "Already have a merchant account?",
+  applicationSubmitted: "Application submitted! We'll review your business shortly.",
+  submitFailed: "Failed to submit application",
+  submittedTitle: "Application under review",
+  submittedDesc:
+    "Your store application is being reviewed. You can prepare your menu in the dashboard while you wait.",
+  viewStatus: "Open merchant dashboard",
+  verifiedTitle: "Your store is approved",
+  verifiedDesc: "Manage orders and menu from your merchant dashboard.",
+  openDashboard: "Open dashboard",
+  validation: {
+    storeName: "Enter your store name",
+    address: "Enter your business address",
+    phone: "Enter a valid phone number",
+    fee: "Enter a valid delivery fee",
+    terms: "You must accept the terms",
+  },
+  status: {
+    pending: "Under review",
+    approved: "Approved",
+    rejected: "Not approved",
+  },
+  bannerPendingTitle: "Store under review",
+  bannerRejectedTitle: "Application not approved",
+  bannerPendingDesc:
+    "Customers cannot order yet. Prepare your menu — we'll notify you when your store is approved.",
+  bannerRejectedDesc: "You can update your details and submit again.",
+  updateApplicationBtn: "Update application",
+  headerLink: "Sell on SwiftDrop",
+} as const;

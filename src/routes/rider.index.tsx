@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Package, DollarSign, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "@/i18n";
 
 export const Route = createFileRoute("/rider/")({
   component: RiderJobs,
@@ -23,6 +24,7 @@ interface JobRow {
 interface StoreLite { id: string; name: string; address: string; }
 
 function RiderJobs() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useRiderProfile();
   const navigate = useNavigate();
@@ -65,36 +67,34 @@ function RiderJobs() {
       .eq("status", "ready")
       .is("rider_id", null);
     if (error) return toast.error(error.message);
-    toast.success("Job accepted! Head to pickup.");
+    toast.success(t("rider.jobAccepted"));
     navigate({ to: "/rider/active" });
   };
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="font-display text-2xl font-bold">Available jobs</h1>
+      <h1 className="font-display text-2xl font-bold">{t("rider.availableJobs")}</h1>
       <p className="text-sm text-muted-foreground">
-        {verified ? "First to accept wins." : "Jobs unlock after your account is verified."}
+        {verified ? t("rider.firstAccept") : t("rider.jobsAfterVerify")}
       </p>
 
       {profileLoading ? (
-        <Card className="mt-6 p-12 text-center text-muted-foreground">Loading...</Card>
+        <Card className="mt-6 p-12 text-center text-muted-foreground">{t("common.loadingShort")}</Card>
       ) : !verified ? (
         <Card className="mt-6 p-12 text-center">
           <ShieldCheck className="h-10 w-10 mx-auto text-amber-600 mb-3" />
-          <p className="font-semibold">Verification required</p>
-          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-            You can browse the job portal, but accepting deliveries is locked until an admin approves your application.
-          </p>
+          <p className="font-semibold">{t("rider.verificationRequired")}</p>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">{t("rider.browseLocked")}</p>
           {profile?.verification_status === "rejected" && (
             <Button asChild variant="outline" className="mt-4">
-              <Link to="/become-rider">Update application</Link>
+              <Link to="/become-rider">{t("rider.updateApplicationBtn")}</Link>
             </Button>
           )}
         </Card>
       ) : jobs.length === 0 ? (
         <Card className="mt-6 p-12 text-center text-muted-foreground">
           <Package className="h-10 w-10 mx-auto opacity-50 mb-3" />
-          No jobs right now. Check back soon!
+          {t("rider.noJobs")}
         </Card>
       ) : (
         <div className="mt-4 space-y-3">
@@ -106,21 +106,21 @@ function RiderJobs() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">#{j.id.slice(0, 6)}</Badge>
-                      <Badge className="bg-primary/10 text-primary border-primary/30">Ready for pickup</Badge>
+                      <Badge className="bg-primary/10 text-primary border-primary/30">{t("rider.readyPickup")}</Badge>
                     </div>
                     <div className="mt-3 space-y-2 text-sm">
-                      <div className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" /><div><p className="font-semibold">Pickup</p><p className="text-muted-foreground">{store?.name} — {store?.address}</p></div></div>
-                      <div className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-secondary shrink-0" /><div><p className="font-semibold">Drop-off</p><p className="text-muted-foreground">{j.delivery_address}</p></div></div>
+                      <div className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" /><div><p className="font-semibold">{t("rider.pickup")}</p><p className="text-muted-foreground">{store?.name} — {store?.address}</p></div></div>
+                      <div className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-secondary shrink-0" /><div><p className="font-semibold">{t("rider.dropoff")}</p><p className="text-muted-foreground">{j.delivery_address}</p></div></div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs text-muted-foreground flex items-center gap-1 justify-end"><DollarSign className="h-3 w-3" />Your fee</div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-1 justify-end"><DollarSign className="h-3 w-3" />{t("rider.yourFee")}</div>
                     <div className="font-display text-2xl font-bold text-primary">${Number(j.delivery_fee).toFixed(2)}</div>
-                    <p className="text-[10px] text-muted-foreground">cash on delivery</p>
+                    <p className="text-[10px] text-muted-foreground">{t("rider.cashOnDelivery")}</p>
                   </div>
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <Button variant="hero" className="flex-1" onClick={() => accept(j.id)}>Accept</Button>
+                  <Button variant="hero" className="flex-1" onClick={() => accept(j.id)}>{t("rider.accept")}</Button>
                 </div>
               </Card>
             );

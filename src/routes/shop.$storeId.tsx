@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/lib/cart";
 import { Plus, MapPin, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
-import { getStoreCategoryLabel } from "@/lib/store-categories";
+import { getStoreCategoryLabel } from "@/lib/store-categories-i18n";
+import { useTranslation } from "@/i18n";
 
 export const Route = createFileRoute("/shop/$storeId")({
   component: () => (
@@ -46,6 +47,7 @@ interface Item {
 }
 
 function StorePage() {
+  const { t } = useTranslation();
   const { storeId } = useParams({ from: "/shop/$storeId" });
   const [store, setStore] = useState<Store | null>(null);
   const [cats, setCats] = useState<Cat[]>([]);
@@ -69,14 +71,14 @@ function StorePage() {
     return (
       <div className="min-h-screen flex flex-col">
         <SiteHeader />
-        <div className="flex-1 p-12 text-center text-muted-foreground">Loading…</div>
+        <div className="flex-1 p-12 text-center text-muted-foreground">{t("common.loading")}</div>
         <SiteFooter />
       </div>
     );
 
   const handleAdd = (it: Item) => {
     if (!store.is_open) {
-      toast.error("This store is currently closed.");
+      toast.error(t("shop.storeClosed"));
       return;
     }
     addItem(store.id, store.name, {
@@ -85,7 +87,7 @@ function StorePage() {
       price: Number(it.price),
       image_url: it.image_url,
     });
-    toast.success(`Added ${it.name}`);
+    toast.success(t("shop.addedItem", { name: it.name }));
   };
 
   return (
@@ -102,7 +104,7 @@ function StorePage() {
           <Card className="p-6">
             <div className="flex items-start justify-between gap-4 flex-wrap">
               <div>
-                <Badge className="mb-2">{getStoreCategoryLabel(store.category)}</Badge>
+                <Badge className="mb-2">{getStoreCategoryLabel(store.category, t)}</Badge>
                 <h1 className="font-display text-3xl md:text-4xl font-bold">{store.name}</h1>
                 <p className="text-muted-foreground mt-1">{store.description}</p>
                 <p className="mt-2 text-sm text-muted-foreground flex items-center gap-1">
@@ -111,7 +113,7 @@ function StorePage() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-xs text-muted-foreground">Delivery fee (cash on arrival)</div>
+                <div className="text-xs text-muted-foreground">{t("shop.deliveryFeeCash")}</div>
                 <div className="font-display text-2xl font-bold">
                   ${Number(store.delivery_fee).toFixed(2)}
                 </div>
@@ -139,7 +141,7 @@ function StorePage() {
                               ${Number(it.price).toFixed(2)}
                             </span>
                             <Button size="sm" variant="hero" onClick={() => handleAdd(it)}>
-                              <Plus className="h-4 w-4" /> Add
+                              <Plus className="h-4 w-4" /> {t("common.add")}
                             </Button>
                           </div>
                         </div>
@@ -170,7 +172,10 @@ function StorePage() {
             <Link to="/cart">
               <Button variant="hero" size="lg" className="w-full justify-between shadow-glow">
                 <span className="flex items-center gap-2">
-                  <ShoppingBag className="h-5 w-5" /> {count} item{count > 1 ? "s" : ""} in cart
+                  <ShoppingBag className="h-5 w-5" />{" "}
+                  {count > 1
+                    ? t("shop.inCartPlural", { count })
+                    : t("shop.inCart", { count })}
                 </span>
                 <span className="font-display text-xl">${subtotal.toFixed(2)}</span>
               </Button>

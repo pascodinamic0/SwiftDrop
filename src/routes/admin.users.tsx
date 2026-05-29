@@ -13,6 +13,7 @@ import {
 import { Search, Users } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 type AppRole = "customer" | "delivery_agent" | "admin" | "vendor";
 const ALL_ROLES: AppRole[] = ["customer", "delivery_agent", "vendor", "admin"];
@@ -35,6 +36,7 @@ interface P {
 }
 
 function AdminUsers() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<P[]>([]);
   const [roles, setRoles] = useState<Record<string, AppRole[]>>({});
   const [search, setSearch] = useState("");
@@ -74,18 +76,18 @@ function AdminUsers() {
       const { error } = await supabase.from("user_roles").insert({ user_id: uid, role });
       if (error) return toast.error(error.message);
     }
-    toast.success("Updated");
+    toast.success(t("admin.updated"));
     load();
   };
 
   return (
     <AdminPage className="space-y-6">
       <AdminPageHeader
-        title="Users"
-        description="Grant roles so customers, vendors, riders, and admins can access the right areas."
+        title={t("admin.users")}
+        description={t("admin.console")}
         badge={
           <Badge variant="secondary" className="font-normal">
-            {users.length} profiles
+            {t("admin.usersCount", { count: users.length })}
           </Badge>
         }
       />
@@ -95,7 +97,7 @@ function AdminUsers() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-10 border-0 bg-muted/50 pl-9 shadow-none focus-visible:ring-1"
-            placeholder="Search by name, phone, or ID…"
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -105,8 +107,8 @@ function AdminUsers() {
       {filtered.length === 0 ? (
         <AdminEmptyState
           icon={Users}
-          title={users.length === 0 ? "No users" : "No matches"}
-          description="Try another search or check back after sign-ups."
+          title={t("admin.users")}
+          description={t("admin.console")}
         />
       ) : (
         <div className="space-y-3">
@@ -126,7 +128,9 @@ function AdminUsers() {
                       {initials}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-display text-lg font-semibold">{u.full_name || "Unnamed user"}</p>
+                      <p className="font-display text-lg font-semibold">
+                        {u.full_name || t("common.unnamedRider")}
+                      </p>
                       <p className="font-mono text-xs text-muted-foreground">{u.id}</p>
                       {u.phone && <p className="mt-1 text-sm text-muted-foreground">{u.phone}</p>}
                       <div className="mt-2 flex flex-wrap gap-1">

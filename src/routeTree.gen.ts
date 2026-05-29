@@ -17,6 +17,7 @@ import { Route as RiderRouteImport } from './routes/rider'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as BecomeRiderRouteImport } from './routes/become-rider'
+import { Route as BecomeMerchantRouteImport } from './routes/become-merchant'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,12 +31,13 @@ import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
 import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
 import { Route as RiderActiveRouteImport } from './routes/rider.active'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as AuthVendorRouteImport } from './routes/auth.vendor'
 import { Route as AuthRiderRouteImport } from './routes/auth.rider'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminStoresRouteImport } from './routes/admin.stores'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminRidersRouteImport } from './routes/admin.riders'
-import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminStoresStoreIdRouteImport } from './routes/admin.stores.$storeId'
 
 const WhyUsRoute = WhyUsRouteImport.update({
   id: '/why-us',
@@ -75,6 +77,11 @@ const CartRoute = CartRouteImport.update({
 const BecomeRiderRoute = BecomeRiderRouteImport.update({
   id: '/become-rider',
   path: '/become-rider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BecomeMerchantRoute = BecomeMerchantRouteImport.update({
+  id: '/become-merchant',
+  path: '/become-merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -142,6 +149,11 @@ const OrdersIdRoute = OrdersIdRouteImport.update({
   path: '/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthVendorRoute = AuthVendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthRiderRoute = AuthRiderRouteImport.update({
   id: '/rider',
   path: '/rider',
@@ -167,16 +179,17 @@ const AdminRidersRoute = AdminRidersRouteImport.update({
   path: '/riders',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminOrdersRoute = AdminOrdersRouteImport.update({
-  id: '/orders',
-  path: '/orders',
-  getParentRoute: () => AdminRoute,
+const AdminStoresStoreIdRoute = AdminStoresStoreIdRouteImport.update({
+  id: '/$storeId',
+  path: '/$storeId',
+  getParentRoute: () => AdminStoresRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/become-merchant': typeof BecomeMerchantRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
@@ -185,12 +198,12 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/vendor': typeof VendorRouteWithChildren
   '/why-us': typeof WhyUsRoute
-  '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/stores': typeof AdminStoresRoute
+  '/admin/stores': typeof AdminStoresRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
+  '/auth/vendor': typeof AuthVendorRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -201,22 +214,24 @@ export interface FileRoutesByFullPath {
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
   '/vendor/': typeof VendorIndexRoute
+  '/admin/stores/$storeId': typeof AdminStoresStoreIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/become-merchant': typeof BecomeMerchantRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRouteWithChildren
   '/terms': typeof TermsRoute
   '/why-us': typeof WhyUsRoute
-  '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/stores': typeof AdminStoresRoute
+  '/admin/stores': typeof AdminStoresRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
+  '/auth/vendor': typeof AuthVendorRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -227,12 +242,14 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersIndexRoute
   '/rider': typeof RiderIndexRoute
   '/vendor': typeof VendorIndexRoute
+  '/admin/stores/$storeId': typeof AdminStoresStoreIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/become-merchant': typeof BecomeMerchantRoute
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
@@ -241,12 +258,12 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/vendor': typeof VendorRouteWithChildren
   '/why-us': typeof WhyUsRoute
-  '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/stores': typeof AdminStoresRoute
+  '/admin/stores': typeof AdminStoresRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
+  '/auth/vendor': typeof AuthVendorRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -257,6 +274,7 @@ export interface FileRoutesById {
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
   '/vendor/': typeof VendorIndexRoute
+  '/admin/stores/$storeId': typeof AdminStoresStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -264,6 +282,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/become-merchant'
     | '/become-rider'
     | '/cart'
     | '/privacy'
@@ -272,12 +291,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/vendor'
     | '/why-us'
-    | '/admin/orders'
     | '/admin/riders'
     | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
     | '/auth/rider'
+    | '/auth/vendor'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -288,22 +307,24 @@ export interface FileRouteTypes {
     | '/orders/'
     | '/rider/'
     | '/vendor/'
+    | '/admin/stores/$storeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/become-merchant'
     | '/become-rider'
     | '/cart'
     | '/privacy'
     | '/shop'
     | '/terms'
     | '/why-us'
-    | '/admin/orders'
     | '/admin/riders'
     | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
     | '/auth/rider'
+    | '/auth/vendor'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -314,11 +335,13 @@ export interface FileRouteTypes {
     | '/orders'
     | '/rider'
     | '/vendor'
+    | '/admin/stores/$storeId'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/auth'
+    | '/become-merchant'
     | '/become-rider'
     | '/cart'
     | '/privacy'
@@ -327,12 +350,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/vendor'
     | '/why-us'
-    | '/admin/orders'
     | '/admin/riders'
     | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
     | '/auth/rider'
+    | '/auth/vendor'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -343,12 +366,14 @@ export interface FileRouteTypes {
     | '/orders/'
     | '/rider/'
     | '/vendor/'
+    | '/admin/stores/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  BecomeMerchantRoute: typeof BecomeMerchantRoute
   BecomeRiderRoute: typeof BecomeRiderRoute
   CartRoute: typeof CartRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -417,6 +442,13 @@ declare module '@tanstack/react-router' {
       path: '/become-rider'
       fullPath: '/become-rider'
       preLoaderRoute: typeof BecomeRiderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/become-merchant': {
+      id: '/become-merchant'
+      path: '/become-merchant'
+      fullPath: '/become-merchant'
+      preLoaderRoute: typeof BecomeMerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -510,6 +542,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/vendor': {
+      id: '/auth/vendor'
+      path: '/vendor'
+      fullPath: '/auth/vendor'
+      preLoaderRoute: typeof AuthVendorRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/auth/rider': {
       id: '/auth/rider'
       path: '/rider'
@@ -545,30 +584,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRidersRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/orders': {
-      id: '/admin/orders'
-      path: '/orders'
-      fullPath: '/admin/orders'
-      preLoaderRoute: typeof AdminOrdersRouteImport
-      parentRoute: typeof AdminRoute
+    '/admin/stores/$storeId': {
+      id: '/admin/stores/$storeId'
+      path: '/$storeId'
+      fullPath: '/admin/stores/$storeId'
+      preLoaderRoute: typeof AdminStoresStoreIdRouteImport
+      parentRoute: typeof AdminStoresRoute
     }
   }
 }
 
+interface AdminStoresRouteChildren {
+  AdminStoresStoreIdRoute: typeof AdminStoresStoreIdRoute
+}
+
+const AdminStoresRouteChildren: AdminStoresRouteChildren = {
+  AdminStoresStoreIdRoute: AdminStoresStoreIdRoute,
+}
+
+const AdminStoresRouteWithChildren = AdminStoresRoute._addFileChildren(
+  AdminStoresRouteChildren,
+)
+
 interface AdminRouteChildren {
-  AdminOrdersRoute: typeof AdminOrdersRoute
   AdminRidersRoute: typeof AdminRidersRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
-  AdminStoresRoute: typeof AdminStoresRoute
+  AdminStoresRoute: typeof AdminStoresRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminOrdersRoute: AdminOrdersRoute,
   AdminRidersRoute: AdminRidersRoute,
   AdminSettingsRoute: AdminSettingsRoute,
-  AdminStoresRoute: AdminStoresRoute,
+  AdminStoresRoute: AdminStoresRouteWithChildren,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
@@ -577,10 +626,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AuthRouteChildren {
   AuthRiderRoute: typeof AuthRiderRoute
+  AuthVendorRoute: typeof AuthVendorRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthRiderRoute: AuthRiderRoute,
+  AuthVendorRoute: AuthVendorRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -628,6 +679,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  BecomeMerchantRoute: BecomeMerchantRoute,
   BecomeRiderRoute: BecomeRiderRoute,
   CartRoute: CartRoute,
   PrivacyRoute: PrivacyRoute,

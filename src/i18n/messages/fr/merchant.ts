@@ -1,0 +1,51 @@
+export const merchantFr = {
+  becomeMetaTitle: "Devenir commerçant — SwiftDrop",
+  joinTitle: "Ouvrez votre commerce sur SwiftDrop",
+  joinSubtitle:
+    "Postulez avec les informations de votre entreprise. Après validation admin, votre boutique est en ligne et vous gérez menu et commandes depuis votre tableau de bord.",
+  benefit1Title: "Votre tableau de bord",
+  benefit1Desc: "Ajoutez des produits, suivez les commandes et gérez votre commerce en un seul endroit.",
+  benefit2Title: "Examen d'abord",
+  benefit2Desc: "Chaque entreprise est vérifiée avant que les clients puissent commander.",
+  benefit3Title: "Mise en ligne",
+  benefit3Desc: "Une fois approuvé, votre commerce apparaît sur la marketplace.",
+  applicationTitle: "Demande de commerce",
+  updateApplication: "Mettre à jour votre demande",
+  formIntro:
+    "Tous les champs sont obligatoires sauf mention contraire. Examen sous 1 à 2 jours ouvrables.",
+  storeName: "Nom du commerce",
+  contactPhone: "Téléphone professionnel",
+  deliveryFee: "Frais de livraison ($)",
+  termsCheckbox:
+    "Je confirme que les informations sont exactes et j'accepte les conditions commerçant et le processus d'examen de SwiftDrop.",
+  submitApplication: "Envoyer la demande",
+  alreadyMerchant: "Déjà un compte commerçant ?",
+  applicationSubmitted: "Demande envoyée ! Nous examinerons votre commerce sous peu.",
+  submitFailed: "Échec de l'envoi de la demande",
+  submittedTitle: "Demande en cours d'examen",
+  submittedDesc:
+    "Votre demande est en cours d'examen. Vous pouvez préparer votre menu dans le tableau de bord en attendant.",
+  viewStatus: "Ouvrir le tableau de bord",
+  verifiedTitle: "Votre commerce est approuvé",
+  verifiedDesc: "Gérez commandes et menu depuis votre tableau de bord commerçant.",
+  openDashboard: "Ouvrir le tableau de bord",
+  validation: {
+    storeName: "Entrez le nom de votre commerce",
+    address: "Entrez l'adresse de votre commerce",
+    phone: "Entrez un numéro de téléphone valide",
+    fee: "Entrez des frais de livraison valides",
+    terms: "Vous devez accepter les conditions",
+  },
+  status: {
+    pending: "En cours d'examen",
+    approved: "Approuvé",
+    rejected: "Non approuvé",
+  },
+  bannerPendingTitle: "Commerce en cours d'examen",
+  bannerRejectedTitle: "Demande non approuvée",
+  bannerPendingDesc:
+    "Les clients ne peuvent pas encore commander. Préparez votre menu — nous vous préviendrons lors de l'approbation.",
+  bannerRejectedDesc: "Vous pouvez mettre à jour vos informations et renvoyer la demande.",
+  updateApplicationBtn: "Mettre à jour la demande",
+  headerLink: "Vendre sur SwiftDrop",
+} as const;

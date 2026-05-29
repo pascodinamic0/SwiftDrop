@@ -57,3 +57,34 @@ export function riderStatusLabel(status: RiderVerificationStatus) {
       return "Not approved";
   }
 }
+
+export type StoreVerificationStatus = "pending" | "approved" | "rejected";
+
+export interface VendorStore {
+  id: string;
+  owner_id: string | null;
+  name: string;
+  description: string | null;
+  category: string;
+  address: string;
+  delivery_fee: number;
+  is_open: boolean;
+  mode: string;
+  image_url: string | null;
+  contact_phone: string | null;
+  verification_status: StoreVerificationStatus;
+  application_notes: string | null;
+  rejection_reason: string | null;
+  applied_at: string | null;
+  verified_at: string | null;
+}
+
+export function isVerifiedVendorStore(
+  store: Pick<VendorStore, "verification_status"> | null | undefined,
+) {
+  return store?.verification_status === "approved";
+}
+
+export function isVendorOnly(roles: AppRole[]) {
+  return roles.includes("vendor") && !roles.includes("admin") && !roles.includes("delivery_agent");
+}

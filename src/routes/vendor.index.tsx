@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { toast } from "sonner";
+import { useTranslation } from "@/i18n";
 import { Check, X, ChefHat, Bell } from "lucide-react";
 
 export const Route = createFileRoute("/vendor/")({
@@ -21,6 +22,7 @@ interface OrderRow {
 interface ItemRow { id: string; order_id: string; name: string; quantity: number; line_total: number; }
 
 function VendorOrders() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [storeId, setStoreId] = useState<string | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -50,7 +52,8 @@ function VendorOrders() {
         .from("stores")
         .select("id")
         .eq("owner_id", user.id)
-        .eq("mode", "dashboard")
+        .order("applied_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
       const sid = (data as { id: string } | null)?.id ?? null;
       setStoreId(sid);
@@ -69,14 +72,14 @@ function VendorOrders() {
   const accept = async (id: string) => {
     const { error } = await supabase.from("orders").update({ status: "awaiting_payment", confirmed_at: new Date().toISOString() }).eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Confirmed — customer will pay");
+    toast.success(t("vendor.confirmedToast"));
   };
 
   const reject = async (id: string) => {
-    if (!reason.trim()) return toast.error("Add a reason");
+    if (!reason.trim()) return toast.error(t("vendor.addReason"));
     const { error } = await supabase.from("orders").update({ status: "rejected", rejection_reason: reason, cancelled_at: new Date().toISOString() }).eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Order rejected");
+    toast.success(t("vendor.orderRejected"));
     setReasonFor(null); setReason("");
   };
 
@@ -85,16 +88,16 @@ function VendorOrders() {
     if (status === "ready") patch.ready_at = new Date().toISOString();
     const { error } = await supabase.from("orders").update(patch).eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success(`Marked ${status}`);
+    toast.success(t("vendor.markedStatus", { status: t(`order.status.${status}`) }));
   };
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="font-display text-2xl font-bold flex items-center gap-2"><Bell className="h-5 w-5" /> Live orders</h1>
-      <p className="text-sm text-muted-foreground">{orders.length} active</p>
+      <h1 className="font-display text-2xl font-bold flex items-center gap-2"><Bell className="h-5 w-5" /> {t("vendor.liveOrders")}</h1>
+      <p className="text-sm text-muted-foreground">{t("vendor.activeCount", { count: orders.length })}</p>
 
       {orders.length === 0 ? (
-        <Card className="mt-6 p-12 text-center text-muted-foreground"><ChefHat className="h-10 w-10 mx-auto opacity-50 mb-3" />No active orders.</Card>
+        <Card className="mt-6 p-12 text-center text-muted-foreground"><ChefHat className="h-10 w-10 mx-auto opacity-50 mb-3" />{t("vendor.noActiveOrders")}</Card>
       ) : (
         <div className="mt-4 grid md:grid-cols-2 gap-3">
           {orders.map((o) => (
@@ -117,21 +120,21 @@ function VendorOrders() {
 
               {reasonFor === o.id ? (
                 <div className="mt-3 space-y-2">
-                  <Input placeholder="Reason for rejection" value={reason} onChange={(e) => setReason(e.target.value)} />
+                  <Input placeholder={t("vendor.rejectReason")} value={reason} onChange={(e) => setReason(e.target.value)} />
                   <div className="flex gap-2">
-                    <Button size="sm" variant="destructive" className="flex-1" onClick={() => reject(o.id)}>Confirm reject</Button>
-                    <Button size="sm" variant="outline" onClick={() => { setReasonFor(null); setReason(""); }}>Cancel</Button>
+                    <Button size="sm" variant="destructive" className="flex-1" onClick={() => reject(o.id)}>{t("vendor.confirmReject")}</Button>
+                    <Button size="sm" variant="outline" onClick={() => { setReasonFor(null); setReason(""); }}>{t("common.cancel")}</Button>
                   </div>
                 </div>
               ) : (
                 <div className="mt-3 flex gap-2">
                   {o.status === "pending_confirmation" && <>
-                    <Button size="sm" variant="hero" className="flex-1" onClick={() => accept(o.id)}><Check className="h-4 w-4" /> Accept</Button>
+                    <Button size="sm" variant="hero" className="flex-1" onClick={() => accept(o.id)}><Check className="h-4 w-4" /> {t("vendor.accept")}</Button>
                     <Button size="sm" variant="outline" onClick={() => setReasonFor(o.id)}><X className="h-4 w-4" /></Button>
                   </>}
-                  {o.status === "awaiting_payment" && <span className="text-xs text-muted-foreground">Waiting for customer payment…</span>}
-                  {o.status === "preparing" && <Button size="sm" variant="hero" className="flex-1" onClick={() => setStatus(o.id, "ready")}>Mark ready for pickup</Button>}
-                  {o.status === "ready" && <span className="text-xs text-primary font-semibold">Awaiting rider…</span>}
+                  {o.status === "awaiting_payment" && <span className="text-xs text-muted-foreground">{t("vendor.waitingPayment")}</span>}
+                  {o.status === "preparing" && <Button size="sm" variant="hero" className="flex-1" onClick={() => setStatus(o.id, "ready")}>{t("vendor.markReady")}</Button>}
+                  {o.status === "ready" && <span className="text-xs text-primary font-semibold">{t("vendor.awaitingRider")}</span>}
                 </div>
               )}
             </Card>

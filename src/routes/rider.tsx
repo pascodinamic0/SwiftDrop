@@ -11,6 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { Logo } from "@/components/Logo";
 import { LogOut, Package, DollarSign, Bike, Wifi, WifiOff } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "@/i18n";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 export const Route = createFileRoute("/rider")({
   head: () => ({ meta: [{ title: "Rider — SwiftDrop" }] }),
@@ -22,6 +24,7 @@ export const Route = createFileRoute("/rider")({
 });
 
 function RiderShell() {
+  const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const { profile, refresh } = useRiderProfile();
   const navigate = useNavigate();
@@ -36,7 +39,7 @@ function RiderShell() {
 
   const toggleOnline = async (v: boolean) => {
     if (!user || !verified) {
-      toast.error("You must be verified before going online");
+      toast.error(t("rider.mustVerifyOnline"));
       return;
     }
     setOnline(v);
@@ -50,9 +53,9 @@ function RiderShell() {
   };
 
   const tabs = [
-    { url: "/rider", label: "Jobs", icon: Package, exact: true },
-    { url: "/rider/active", label: "Active", icon: Bike },
-    { url: "/rider/earnings", label: "Earnings", icon: DollarSign },
+    { url: "/rider", label: t("rider.tabs.jobs"), icon: Package, exact: true },
+    { url: "/rider/active", label: t("rider.tabs.active"), icon: Bike },
+    { url: "/rider/earnings", label: t("rider.tabs.earnings"), icon: DollarSign },
   ];
 
   return (
@@ -68,14 +71,15 @@ function RiderShell() {
                 ) : (
                   <WifiOff className="h-4 w-4 text-muted-foreground" />
                 )}
-                <span className="text-xs font-semibold">{online ? "Online" : "Offline"}</span>
+                <span className="text-xs font-semibold">{online ? t("common.online") : t("common.offline")}</span>
                 <Switch checked={online} onCheckedChange={toggleOnline} />
               </div>
             ) : (
               <span className="hidden sm:inline text-xs font-semibold text-amber-700 bg-amber-500/10 px-3 py-1 rounded-full">
-                Probation
+                {t("rider.probation")}
               </span>
             )}
+            <LanguageToggle />
             <Button
               variant="outline"
               size="sm"

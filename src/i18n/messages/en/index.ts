@@ -12,6 +12,7 @@ import { whyUsEn } from "./whyUs";
 import { storeCategoryEn } from "./storeCategory";
 import { passwordEn } from "./password";
 import { metaEn } from "./meta";
+import { merchantEn } from "./merchant";
 
 export const en = {
   common: commonEn,
@@ -28,6 +29,7 @@ export const en = {
   storeCategory: storeCategoryEn,
   password: passwordEn,
   meta: metaEn,
+  merchant: merchantEn,
   legal: {
     privacyTitle: "Privacy policy",
     privacyMeta: "Privacy policy — SwiftDrop",

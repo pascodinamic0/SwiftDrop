@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useCart } from "@/lib/cart";
 import { useTranslation } from "@/i18n";
 import { LogOut, ShoppingBag, Package } from "lucide-react";
-import { customerHomeFor, isRiderOnly } from "@/lib/roles";
+import { customerHomeFor, isRiderOnly, isVendorOnly } from "@/lib/roles";
 
 export function SiteHeader() {
   const { t } = useTranslation();
@@ -14,6 +14,7 @@ export function SiteHeader() {
   const { count } = useCart();
   const navigate = useNavigate();
   const riderOnly = isRiderOnly(roles);
+  const vendorOnly = isVendorOnly(roles);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
@@ -35,9 +36,14 @@ export function SiteHeader() {
           <Link to="/why-us" className="hover:text-primary transition-colors">
             {t("nav.whyUs")}
           </Link>
-          {!riderOnly && (
+          {!riderOnly && !vendorOnly && (
             <Link to="/become-rider" className="hover:text-primary transition-colors">
               {t("nav.becomeRider")}
+            </Link>
+          )}
+          {!riderOnly && !vendorOnly && (
+            <Link to="/become-merchant" className="hover:text-primary transition-colors">
+              {t("merchant.headerLink")}
             </Link>
           )}
         </nav>

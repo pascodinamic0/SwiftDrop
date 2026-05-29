@@ -1,7 +1,8 @@
 export const shopEn = {
   metaTitle: "Browse stores — SwiftDrop",
-  title: "Order from local stores",
-  subtitle: "Pick a category, sort by what matters, and browse stores near you.",
+  title: "Local stores",
+  subtitle: "Browse stores near you.",
+  resultsFiltered: "{count} result(s)",
   sort: "Sort",
   sortOpenFirst: "Open first, then A–Z",
   sortNameAsc: "Name A–Z",
