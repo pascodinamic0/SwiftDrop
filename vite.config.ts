@@ -13,7 +13,18 @@ const isVercelBuild =
   Boolean(process.env.VERCEL_ENV);
 
 export default defineConfig({
-  nitro: {
-    preset: isVercelBuild ? "vercel" : "cloudflare-module",
-  },
+  nitro: isVercelBuild
+    ? {
+        preset: "vercel",
+        // @lovable.dev/vite-tanstack-config defaults to dist/server, which breaks
+        // Vercel's Build Output API (needs functions/__server.func + static/).
+        output: {
+          dir: ".vercel/output",
+          serverDir: ".vercel/output/functions/__server.func",
+          publicDir: ".vercel/output/static",
+        },
+      }
+    : {
+        preset: "cloudflare-module",
+      },
 });
