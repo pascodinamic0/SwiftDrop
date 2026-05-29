@@ -1,24 +1,30 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { z } from "zod";
+import type { TFunction } from "@/i18n/translate";
 
-const changePasswordSchema = z
-  .object({
-    currentPassword: z.string().min(1, "Enter your current password"),
-    newPassword: z.string().min(6, "New password must be at least 6 characters").max(72),
-    confirmPassword: z.string().min(1, "Confirm your new password"),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+function changePasswordSchema(t: TFunction) {
+  return z
+    .object({
+      currentPassword: z.string().min(1, t("password.currentRequired")),
+      newPassword: z.string().min(6, t("password.newMin")).max(72),
+      confirmPassword: z.string().min(1, t("password.confirmRequired")),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t("password.mismatch"),
+      path: ["confirmPassword"],
+    });
+}
 
 export function ChangePasswordForm() {
+  const { t } = useTranslation();
+  const schema = useMemo(() => changePasswordSchema(t), [t]);
   const { user } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -28,11 +34,11 @@ export function ChangePasswordForm() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!user?.email) {
-      toast.error("You must be signed in to change your password.");
+      toast.error(t("password.mustSignIn"));
       return;
     }
 
-    const parsed = changePasswordSchema.safeParse({
+    const parsed = schema.safeParse({
       currentPassword,
       newPassword,
       confirmPassword,
@@ -49,7 +55,7 @@ export function ChangePasswordForm() {
         password: parsed.data.currentPassword,
       });
       if (verifyError) {
-        toast.error("Current password is incorrect.");
+        toast.error(t("password.incorrect"));
         return;
       }
 
@@ -61,9 +67,9 @@ export function ChangePasswordForm() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      toast.success("Password updated.");
+      toast.success(t("password.updated"));
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Could not update password";
+      const msg = err instanceof Error ? err.message : t("password.updateFailed");
       toast.error(msg);
     } finally {
       setSubmitting(false);
@@ -73,7 +79,7 @@ export function ChangePasswordForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="current-password">Current password</Label>
+        <Label htmlFor="current-password">{t("password.current")}</Label>
         <Input
           id="current-password"
           type="password"
@@ -84,7 +90,7 @@ export function ChangePasswordForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="new-password">New password</Label>
+        <Label htmlFor="new-password">{t("password.new")}</Label>
         <Input
           id="new-password"
           type="password"
@@ -94,10 +100,10 @@ export function ChangePasswordForm() {
           required
           minLength={6}
         />
-        <p className="text-xs text-muted-foreground">At least 6 characters (Supabase requirement).</p>
+        <p className="text-xs text-muted-foreground">{t("password.hint")}</p>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirm-password">Confirm new password</Label>
+        <Label htmlFor="confirm-password">{t("password.confirm")}</Label>
         <Input
           id="confirm-password"
           type="password"
@@ -109,7 +115,7 @@ export function ChangePasswordForm() {
         />
       </div>
       <Button type="submit" variant="hero" disabled={submitting}>
-        {submitting ? "Updating…" : "Update password"}
+        {submitting ? t("common.updating") : t("password.updateBtn")}
       </Button>
     </form>
   );

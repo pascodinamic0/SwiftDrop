@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ShieldAlert, ShieldCheck, XCircle } from "lucide-react";
 import type { RiderProfile } from "@/lib/roles";
-import { riderStatusLabel } from "@/lib/roles";
+import { getRiderStatusLabel } from "@/lib/rider-status";
+import { useTranslation } from "@/i18n";
 import { Link } from "@tanstack/react-router";
 
 export function RiderVerificationBanner({
@@ -13,6 +14,8 @@ export function RiderVerificationBanner({
   profile: RiderProfile;
   compact?: boolean;
 }) {
+  const { t } = useTranslation();
+
   if (profile.verification_status === "approved") return null;
 
   const isPending = profile.verification_status === "pending";
@@ -40,25 +43,29 @@ export function RiderVerificationBanner({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="font-display text-lg font-bold">
-              {isPending ? "Application under review" : "Application not approved"}
+              {isPending ? t("rider.bannerPendingTitle") : t("rider.bannerRejectedTitle")}
             </h2>
-            <Badge variant="outline">{riderStatusLabel(profile.verification_status)}</Badge>
+            <Badge variant="outline">
+              {getRiderStatusLabel(profile.verification_status, t)}
+            </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             {isPending
-              ? "Your rider account is in probation. Our team is verifying your details — you'll get access to jobs once approved."
+              ? t("rider.bannerPendingDesc")
               : profile.rejection_reason
                 ? profile.rejection_reason
-                : "Your application was not approved. You can update your details and submit again."}
+                : t("rider.bannerRejectedDesc")}
           </p>
           {profile.applied_at && (
             <p className="text-xs text-muted-foreground mt-2">
-              Submitted {new Date(profile.applied_at).toLocaleString()}
+              {t("rider.submittedAt", {
+                date: new Date(profile.applied_at).toLocaleString(),
+              })}
             </p>
           )}
           {isRejected && (
             <Button asChild variant="outline" size="sm" className="mt-3">
-              <Link to="/become-rider">Update application</Link>
+              <Link to="/become-rider">{t("rider.updateApplicationBtn")}</Link>
             </Button>
           )}
         </div>

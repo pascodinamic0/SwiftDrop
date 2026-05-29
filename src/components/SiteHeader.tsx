@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import { useAuth } from "@/lib/auth";
 import { useCart } from "@/lib/cart";
+import { useTranslation } from "@/i18n";
 import { LogOut, ShoppingBag, Package } from "lucide-react";
 import { customerHomeFor, isRiderOnly } from "@/lib/roles";
 
 export function SiteHeader() {
+  const { t } = useTranslation();
   const { user, roles, signOut } = useAuth();
   const { count } = useCart();
   const navigate = useNavigate();
@@ -22,26 +25,27 @@ export function SiteHeader() {
             className="hover:text-primary transition-colors"
             activeOptions={{ exact: true }}
           >
-            Home
+            {t("nav.home")}
           </Link>
           {!riderOnly && (
             <Link to="/shop" className="hover:text-primary transition-colors">
-              Shop
+              {t("nav.shop")}
             </Link>
           )}
           <Link to="/why-us" className="hover:text-primary transition-colors">
-            Why us
+            {t("nav.whyUs")}
           </Link>
           {!riderOnly && (
             <Link to="/become-rider" className="hover:text-primary transition-colors">
-              Become a rider
+              {t("nav.becomeRider")}
             </Link>
           )}
         </nav>
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           {!riderOnly && (
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" aria-label={t("nav.cart")}>
                 <ShoppingBag className="h-5 w-5" />
                 {count > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
@@ -61,10 +65,10 @@ export function SiteHeader() {
                 {riderOnly ? (
                   <>
                     <Package className="h-4 w-4 mr-1" />
-                    Job portal
+                    {t("nav.jobPortal")}
                   </>
                 ) : (
-                  "Dashboard"
+                  t("nav.dashboard")
                 )}
               </Button>
               <Button
@@ -74,6 +78,7 @@ export function SiteHeader() {
                   await signOut();
                   navigate({ to: "/" });
                 }}
+                aria-label={t("nav.signOut")}
               >
                 <LogOut className="h-4 w-4" />
               </Button>
@@ -81,14 +86,14 @@ export function SiteHeader() {
           ) : (
             <>
               <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/auth" })}>
-                Log in
+                {t("nav.login")}
               </Button>
               <Button
                 variant="hero"
                 size="sm"
                 onClick={() => navigate({ to: "/auth", search: { mode: "signup" } as never })}
               >
-                Get started
+                {t("nav.getStarted")}
               </Button>
             </>
           )}

@@ -1,0 +1,15 @@
+export const passwordFr = {
+  currentRequired: "Entrez votre mot de passe actuel",
+  newMin: "Le nouveau mot de passe doit contenir au moins 6 caractères",
+  confirmRequired: "Confirmez votre nouveau mot de passe",
+  mismatch: "Les mots de passe ne correspondent pas",
+  mustSignIn: "Vous devez être connecté pour changer votre mot de passe.",
+  incorrect: "Le mot de passe actuel est incorrect.",
+  updated: "Mot de passe mis à jour.",
+  updateFailed: "Impossible de mettre à jour le mot de passe",
+  current: "Mot de passe actuel",
+  new: "Nouveau mot de passe",
+  confirm: "Confirmer le nouveau mot de passe",
+  hint: "Au moins 6 caractères (exigence Supabase).",
+  updateBtn: "Mettre à jour le mot de passe",
+} as const;

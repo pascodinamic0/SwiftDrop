@@ -1,23 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Mail } from "lucide-react";
-
-const footerLinks = {
-  shop: [
-    { label: "Browse stores", to: "/shop" as const },
-    { label: "Cart", to: "/cart" as const },
-  ],
-  company: [
-    { label: "Why buy from us", to: "/why-us" as const },
-    { label: "Become a rider", to: "/become-rider" as const },
-  ],
-  legal: [
-    { label: "Terms of service", to: "/terms" as const },
-    { label: "Privacy policy", to: "/privacy" as const },
-  ],
-};
+import { useTranslation } from "@/i18n";
 
 export function SiteFooter() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    shop: [
+      { label: t("nav.browseStores"), to: "/shop" as const },
+      { label: t("nav.cart"), to: "/cart" as const },
+    ],
+    company: [
+      { label: t("nav.whyBuyFromUs"), to: "/why-us" as const },
+      { label: t("nav.becomeRider"), to: "/become-rider" as const },
+    ],
+    legal: [
+      { label: t("nav.terms"), to: "/terms" as const },
+      { label: t("nav.privacy"), to: "/privacy" as const },
+    ],
+  };
+
   return (
     <footer className="mt-auto border-t border-border bg-card/40 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-12 md:py-16">
@@ -25,8 +28,7 @@ export function SiteFooter() {
           <div className="space-y-4">
             <Logo />
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              Local restaurants, groceries, and essentials delivered fast. Order with confidence —
-              clear pricing, live updates, and riders you can trust.
+              {t("nav.footerBlurb")}
             </p>
             <a
               href="mailto:support@swiftdrop.app"
@@ -37,9 +39,9 @@ export function SiteFooter() {
             </a>
           </div>
 
-          <nav aria-label="Shop">
+          <nav aria-label={t("nav.shopSection")}>
             <h3 className="font-display text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
-              Shop
+              {t("nav.shopSection")}
             </h3>
             <ul className="space-y-3 text-sm">
               {footerLinks.shop.map((item) => (
@@ -55,9 +57,9 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Company">
+          <nav aria-label={t("nav.companySection")}>
             <h3 className="font-display text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
-              Company
+              {t("nav.companySection")}
             </h3>
             <ul className="space-y-3 text-sm">
               {footerLinks.company.map((item) => (
@@ -73,9 +75,9 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <nav aria-label="Legal">
+          <nav aria-label={t("nav.legalSection")}>
             <h3 className="font-display text-sm font-semibold text-foreground uppercase tracking-wide mb-4">
-              Legal
+              {t("nav.legalSection")}
             </h3>
             <ul className="space-y-3 text-sm">
               {footerLinks.legal.map((item) => (
@@ -93,16 +95,16 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row gap-4 justify-between items-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} SwiftDrop. All rights reserved.</p>
+          <p>{t("nav.copyright", { year: new Date().getFullYear() })}</p>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             <Link to="/terms" className="hover:text-foreground transition-colors">
-              Terms
+              {t("nav.termsShort")}
             </Link>
             <Link to="/privacy" className="hover:text-foreground transition-colors">
-              Privacy
+              {t("nav.privacyShort")}
             </Link>
             <Link to="/why-us" className="hover:text-foreground transition-colors">
-              Why us
+              {t("nav.whyUs")}
             </Link>
           </div>
         </div>

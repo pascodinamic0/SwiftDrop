@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Card } from "@/components/ui/card";
 import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 import { useAuth } from "@/lib/auth";
+import { AdminPage, AdminPageHeader, AdminPanel } from "@/components/admin/AdminPage";
+import { KeyRound, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({ meta: [{ title: "Admin settings — SwiftDrop" }] }),
@@ -12,19 +13,29 @@ function AdminSettings() {
   const { user } = useAuth();
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-lg">
-      <h1 className="font-display text-2xl font-bold">Account settings</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Signed in as {user?.email ?? "—"}
-      </p>
+    <AdminPage className="max-w-2xl">
+      <AdminPageHeader
+        title="Account settings"
+        description="Manage your admin credentials and session security."
+      />
 
-      <Card className="p-5 mt-6">
-        <h2 className="font-semibold">Change password</h2>
-        <p className="mt-1 text-sm text-muted-foreground mb-4">
-          Verify your current password, then choose a new one.
-        </p>
+      <div className="mb-6 flex items-center gap-3 rounded-xl border border-border/80 bg-card/95 p-4 shadow-card">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-secondary-foreground">
+          <Shield className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-medium">Signed in</p>
+          <p className="truncate text-sm text-muted-foreground">{user?.email ?? "—"}</p>
+        </div>
+      </div>
+
+      <AdminPanel
+        title="Change password"
+        description="Verify your current password, then choose a new one."
+        icon={KeyRound}
+      >
         <ChangePasswordForm />
-      </Card>
-    </div>
+      </AdminPanel>
+    </AdminPage>
   );
 }

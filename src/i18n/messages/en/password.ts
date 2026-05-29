@@ -1,0 +1,15 @@
+export const passwordEn = {
+  currentRequired: "Enter your current password",
+  newMin: "New password must be at least 6 characters",
+  confirmRequired: "Confirm your new password",
+  mismatch: "Passwords do not match",
+  mustSignIn: "You must be signed in to change your password.",
+  incorrect: "Current password is incorrect.",
+  updated: "Password updated.",
+  updateFailed: "Could not update password",
+  current: "Current password",
+  new: "New password",
+  confirm: "Confirm new password",
+  hint: "At least 6 characters (Supabase requirement).",
+  updateBtn: "Update password",
+} as const;
