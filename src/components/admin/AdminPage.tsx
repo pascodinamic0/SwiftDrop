@@ -10,7 +10,7 @@ export function AdminPage({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8", className)}>
+    <div className={cn("w-full min-w-0 max-w-full px-4 py-8 sm:px-6 lg:px-8", className)}>
       {children}
     </div>
   );
@@ -45,7 +45,11 @@ export function AdminPageHeader({
           <p className="max-w-2xl text-sm text-muted-foreground sm:text-base">{description}</p>
         )}
       </div>
-      {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+          {actions}
+        </div>
+      )}
     </div>
   );
 }
@@ -139,7 +143,7 @@ export function AdminToolbar({
   return (
     <Card
       className={cn(
-        "flex flex-col gap-3 border-border/80 bg-card/95 p-4 shadow-card backdrop-blur-sm md:flex-row md:items-center",
+        "flex min-w-0 flex-col gap-3 border-border/80 bg-card/95 p-4 shadow-card backdrop-blur-sm md:flex-row md:items-center",
         className,
       )}
     >

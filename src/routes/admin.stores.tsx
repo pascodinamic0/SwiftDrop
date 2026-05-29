@@ -24,11 +24,9 @@ import {
 import { MapPin, Plus, Search, Store, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import type { StoreCategoryId } from "@/lib/store-categories";
-import {
-  STORE_CATEGORY_META,
-  STORE_CATEGORY_ORDER,
-  getStoreCategoryLabel,
-} from "@/lib/store-categories";
+import { STORE_CATEGORY_META, STORE_CATEGORY_ORDER } from "@/lib/store-categories";
+import { getStoreCategoryLabel, getStoreCategoryMeta } from "@/lib/store-categories-i18n";
+import { useTranslation } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 type StoreMode = "manual" | "dashboard";
@@ -60,11 +58,12 @@ async function resolveOwnerId(email: string, userId: string): Promise<string | n
     p_email: trimmedEmail,
   });
   if (error) throw error;
-  if (!data) throw new Error("No user found for that email");
+  if (!data) throw new Error("no_user");
   return data as string;
 }
 
 function AdminStores() {
+  const { t } = useTranslation();
   const [stores, setStores] = useState<S[]>([]);
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
@@ -96,9 +95,9 @@ function AdminStores() {
       (s) =>
         s.name.toLowerCase().includes(needle) ||
         s.address.toLowerCase().includes(needle) ||
-        getStoreCategoryLabel(s.category).toLowerCase().includes(needle),
+        getStoreCategoryLabel(s.category, t).toLowerCase().includes(needle),
     );
-  }, [stores, search]);
+  }, [stores, search, t]);
 
   const openCount = stores.filter((s) => s.is_open).length;
   const unassignedCount = stores.filter((s) => !s.owner_id).length;
@@ -107,7 +106,7 @@ function AdminStores() {
     try {
       const uid = await resolveOwnerId(email, userId);
       if (!uid) {
-        toast.error("Enter owner email or user ID");
+        toast.error(t("admin.enterOwner"));
         return;
       }
       const { error } = await supabase.rpc("link_store_owner", {
@@ -115,18 +114,24 @@ function AdminStores() {
         p_user_id: uid,
       });
       if (error) throw error;
-      toast.success("Vendor linked to store");
+      toast.success(t("admin.vendorLinked"));
       setLinkEmail("");
       setLinkUserId("");
       setLinkingStoreId(null);
       load();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to link owner");
+      const msg =
+        err instanceof Error && err.message === "no_user"
+          ? t("admin.noUserEmail")
+          : err instanceof Error
+            ? err.message
+            : t("admin.linkFailed");
+      toast.error(msg);
     }
   };
 
   const create = async () => {
-    if (!name || !addr) return toast.error("Name and address required");
+    if (!name || !addr) return toast.error(t("admin.nameAddressRequired"));
     const { data: created, error } = await supabase
       .from("stores")
       .insert({
@@ -147,7 +152,7 @@ function AdminStores() {
     if (ownerEmail.trim() || ownerUserId.trim()) {
       await linkOwner(storeId, ownerEmail, ownerUserId);
     } else {
-      toast.success("Store created");
+      toast.success(t("admin.storeCreated"));
     }
 
     setName("");
@@ -166,7 +171,7 @@ function AdminStores() {
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Delete store and all its menu/orders refs?")) return;
+    if (!confirm(t("admin.deleteStoreConfirm"))) return;
     const { error } = await supabase.from("stores").delete().eq("id", id);
     if (error) return toast.error(error.message);
     load();
@@ -175,8 +180,8 @@ function AdminStores() {
   return (
     <AdminPage className="space-y-8">
       <AdminPageHeader
-        title="Stores"
-        description="Add partners, toggle availability, and connect vendor accounts."
+        title={t("admin.stores")}
+        description={t("admin.console")}
         badge={
           <Badge variant="secondary" className="font-normal">
             {stores.length} total · {openCount} open
@@ -184,21 +189,21 @@ function AdminStores() {
         }
         actions={
           <Button variant="outline" size="sm" onClick={() => setShowCreate((v) => !v)}>
-            {showCreate ? "Hide form" : "New store"}
+            {showCreate ? t("common.cancel") : t("admin.createStoreBtn")}
           </Button>
         }
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <MiniStat label="Open now" value={openCount} />
-        <MiniStat label="Needs vendor" value={unassignedCount} accent={unassignedCount > 0} />
-        <MiniStat label="Dashboard mode" value={stores.filter((s) => s.mode === "dashboard").length} />
+        <MiniStat label={t("common.open")} value={openCount} />
+        <MiniStat label={t("admin.noVendor")} value={unassignedCount} accent={unassignedCount > 0} />
+        <MiniStat label={t("admin.modeDashboardShort")} value={stores.filter((s) => s.mode === "dashboard").length} />
       </div>
 
       {showCreate && (
         <AdminPanel
-          title="Create new store"
-          description="Stores appear on the shop once marked open. Assign a vendor for dashboard access."
+          title={t("admin.createStore")}
+          description={t("admin.console")}
           icon={Plus}
           footer={
             <Button variant="hero" onClick={create}>
@@ -208,14 +213,14 @@ function AdminStores() {
           }
         >
           <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Name">
+            <Field label={t("vendor.name")}>
               <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Bloom & Petal" />
             </Field>
-            <Field label="Address">
+            <Field label={t("admin.address")}>
               <Input value={addr} onChange={(e) => setAddr(e.target.value)} placeholder="123 Main St" />
             </Field>
             <div className="md:col-span-2">
-              <Field label="Description">
+              <Field label={t("admin.description")}>
                 <Textarea
                   rows={2}
                   value={desc}
@@ -224,7 +229,7 @@ function AdminStores() {
                 />
               </Field>
             </div>
-            <Field label="Category">
+            <Field label={t("admin.category")}>
               <Select value={cat} onValueChange={(v) => setCat(v as StoreCategoryId)}>
                 <SelectTrigger>
                   <SelectValue />
@@ -232,42 +237,42 @@ function AdminStores() {
                 <SelectContent>
                   {STORE_CATEGORY_ORDER.map((id) => (
                     <SelectItem key={id} value={id}>
-                      {STORE_CATEGORY_META[id].label}
+                      {getStoreCategoryMeta(id, t).label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Mode">
+            <Field label={t("admin.mode")}>
               <Select value={mode} onValueChange={(v) => setMode(v as StoreMode)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="manual">Manual (admin handles)</SelectItem>
-                  <SelectItem value="dashboard">Dashboard (vendor handles)</SelectItem>
+                  <SelectItem value="manual">{t("admin.modeManual")}</SelectItem>
+                  <SelectItem value="dashboard">{t("admin.modeDashboard")}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
-            <Field label="Delivery fee ($)">
+            <Field label={t("admin.deliveryFee")}>
               <Input type="number" step="0.01" value={fee} onChange={(e) => setFee(e.target.value)} />
             </Field>
-            <Field label="Image URL">
+            <Field label={t("admin.imageUrl")}>
               <Input value={img} onChange={(e) => setImg(e.target.value)} placeholder="https://…" />
             </Field>
-            <Field label="Owner email (optional)">
+            <Field label={t("admin.ownerEmail")}>
               <Input
                 type="email"
                 value={ownerEmail}
                 onChange={(e) => setOwnerEmail(e.target.value)}
-                placeholder="vendor@example.com"
+                placeholder={t("admin.placeholderVendorEmail")}
               />
             </Field>
-            <Field label="Owner user ID (optional)">
+            <Field label={t("admin.ownerUserId")}>
               <Input
                 value={ownerUserId}
                 onChange={(e) => setOwnerUserId(e.target.value)}
-                placeholder="UUID from Users"
+                placeholder={t("admin.placeholderUuid")}
               />
             </Field>
           </div>
@@ -293,7 +298,7 @@ function AdminStores() {
         {filtered.length === 0 ? (
           <AdminEmptyState
             icon={Store}
-            title={stores.length === 0 ? "No stores yet" : "No matches"}
+            title={t("admin.stores")}
             description={
               stores.length === 0
                 ? "Create your first store using the form above."
@@ -324,14 +329,14 @@ function AdminStores() {
                             "absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full ring-2 ring-card",
                             s.is_open ? "bg-success" : "bg-muted-foreground/50",
                           )}
-                          title={s.is_open ? "Open" : "Closed"}
+                          title={s.is_open ? t("common.open") : t("common.closed")}
                         />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="font-display text-lg font-semibold tracking-tight">{s.name}</h3>
                           <Badge variant="outline" className="text-[10px] font-normal">
-                            {getStoreCategoryLabel(s.category)}
+                            {getStoreCategoryLabel(s.category, t)}
                           </Badge>
                           <Badge
                             variant={s.mode === "dashboard" ? "default" : "secondary"}
@@ -359,9 +364,9 @@ function AdminStores() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 border-t border-border/60 pt-4 sm:border-0 sm:pt-0 sm:pl-2">
+                    <div className="flex w-full min-w-0 flex-wrap items-center gap-2 border-t border-border/60 pt-4 sm:ml-auto sm:w-auto sm:max-w-full sm:justify-end sm:border-0 sm:pt-0">
                       <label className="flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-3 py-1.5 text-xs font-medium">
-                        Open
+                        {t("common.open")}
                         <Switch
                           checked={s.is_open}
                           onCheckedChange={(v) => updateStore(s.id, { is_open: v })}
@@ -375,8 +380,8 @@ function AdminStores() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="manual">Manual</SelectItem>
-                          <SelectItem value="dashboard">Dashboard</SelectItem>
+                          <SelectItem value="manual">{t("admin.modeManualShort")}</SelectItem>
+                          <SelectItem value="dashboard">{t("admin.modeDashboardShort")}</SelectItem>
                         </SelectContent>
                       </Select>
                       <Button
@@ -389,7 +394,7 @@ function AdminStores() {
                         }}
                       >
                         <UserPlus className="h-4 w-4" />
-                        Assign
+                        {t("admin.assignOwner")}
                       </Button>
                       <Button
                         variant="ghost"
@@ -404,15 +409,15 @@ function AdminStores() {
 
                   {linkingStoreId === s.id && (
                     <div className="flex flex-wrap items-end gap-3 border-t border-border/60 bg-muted/20 px-4 py-4 sm:px-5">
-                      <Field label="Email" className="min-w-[180px] flex-1">
+                      <Field label={t("admin.email")} className="min-w-[180px] flex-1">
                         <Input
                           type="email"
                           value={linkEmail}
                           onChange={(e) => setLinkEmail(e.target.value)}
-                          placeholder="vendor@example.com"
+                          placeholder={t("admin.placeholderVendorEmail")}
                         />
                       </Field>
-                      <Field label="User ID" className="min-w-[180px] flex-1">
+                      <Field label={t("admin.userId")} className="min-w-[180px] flex-1">
                         <Input
                           value={linkUserId}
                           onChange={(e) => setLinkUserId(e.target.value)}
@@ -420,7 +425,7 @@ function AdminStores() {
                         />
                       </Field>
                       <Button variant="hero" size="sm" onClick={() => linkOwner(s.id, linkEmail, linkUserId)}>
-                        Link vendor
+                        {t("admin.linkVendor")}
                       </Button>
                     </div>
                   )}

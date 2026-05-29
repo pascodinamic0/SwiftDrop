@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 import { AdminPage, AdminPageHeader, AdminPanel } from "@/components/admin/AdminPage";
 import { KeyRound, Shield } from "lucide-react";
 
@@ -10,13 +11,14 @@ export const Route = createFileRoute("/admin/settings")({
 });
 
 function AdminSettings() {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   return (
-    <AdminPage className="max-w-2xl">
+    <AdminPage className="max-w-2xl lg:max-w-3xl">
       <AdminPageHeader
-        title="Account settings"
-        description="Manage your admin credentials and session security."
+        title={t("admin.accountSettings")}
+        description={t("admin.console")}
       />
 
       <div className="mb-6 flex items-center gap-3 rounded-xl border border-border/80 bg-card/95 p-4 shadow-card">
@@ -24,14 +26,15 @@ function AdminSettings() {
           <Shield className="h-5 w-5" />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium">Signed in</p>
-          <p className="truncate text-sm text-muted-foreground">{user?.email ?? "—"}</p>
+          <p className="truncate text-sm font-medium">
+            {t("admin.signedInAs", { email: user?.email ?? t("common.dash") })}
+          </p>
         </div>
       </div>
 
       <AdminPanel
-        title="Change password"
-        description="Verify your current password, then choose a new one."
+        title={t("admin.changePassword")}
+        description={t("admin.changePasswordDesc")}
         icon={KeyRound}
       >
         <ChangePasswordForm />

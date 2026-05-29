@@ -33,7 +33,7 @@ export function AdminSidebar() {
   const initials = user?.email?.slice(0, 1).toUpperCase() ?? "A";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border/80">
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border/80 bg-sidebar/50">
         <div className="flex items-center gap-2 px-2 py-2">
           {!collapsed ? (
@@ -66,7 +66,7 @@ export function AdminSidebar() {
                       isActive={active}
                       className={
                         active
-                          ? "bg-primary/15 font-medium text-foreground shadow-sm data-[active=true]:bg-primary/15"
+                          ? "bg-primary/15 font-medium text-foreground data-[active=true]:bg-primary/15"
                           : undefined
                       }
                     >
