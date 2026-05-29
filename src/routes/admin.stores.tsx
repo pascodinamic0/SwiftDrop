@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import type { StoreCategoryId } from "@/lib/store-categories";
 import {
@@ -43,6 +43,19 @@ interface S {
   contact_phone: string | null;
 }
 
+async function resolveOwnerId(email: string, userId: string): Promise<string | null> {
+  const trimmedId = userId.trim();
+  if (trimmedId) return trimmedId;
+  const trimmedEmail = email.trim();
+  if (!trimmedEmail) return null;
+  const { data, error } = await supabase.rpc("resolve_user_id_by_email", {
+    p_email: trimmedEmail,
+  });
+  if (error) throw error;
+  if (!data) throw new Error("No user found for that email");
+  return data as string;
+}
+
 function AdminStores() {
   const [stores, setStores] = useState<S[]>([]);
   const [name, setName] = useState("");
@@ -53,6 +66,10 @@ function AdminStores() {
   const [fee, setFee] = useState("2.50");
   const [img, setImg] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
+  const [ownerUserId, setOwnerUserId] = useState("");
+  const [linkingStoreId, setLinkingStoreId] = useState<string | null>(null);
+  const [linkEmail, setLinkEmail] = useState("");
+  const [linkUserId, setLinkUserId] = useState("");
 
   const load = async () => {
     const { data } = await supabase.from("stores").select("*").order("name");
@@ -62,14 +79,31 @@ function AdminStores() {
     load();
   }, []);
 
+  const linkOwner = async (storeId: string, email: string, userId: string) => {
+    try {
+      const uid = await resolveOwnerId(email, userId);
+      if (!uid) {
+        toast.error("Enter owner email or user ID");
+        return;
+      }
+      const { error } = await supabase.rpc("link_store_owner", {
+        p_store_id: storeId,
+        p_user_id: uid,
+      });
+      if (error) throw error;
+      toast.success("Vendor linked to store");
+      setLinkEmail("");
+      setLinkUserId("");
+      setLinkingStoreId(null);
+      load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to link owner");
+    }
+  };
+
   const create = async () => {
     if (!name || !addr) return toast.error("Name and address required");
-    let owner_id: string | null = null;
-    if (ownerEmail.trim()) {
-      // Look up owner — only works if they have a profile / we trust the email-based flow. Best-effort.
-      toast.info("Note: link owner manually via Users tab if needed.");
-    }
-    const { error } = await supabase
+    const { data: created, error } = await supabase
       .from("stores")
       .insert({
         name,
@@ -79,16 +113,26 @@ function AdminStores() {
         mode,
         delivery_fee: Number(fee),
         image_url: img || null,
-        owner_id,
-      });
+        owner_id: null,
+      })
+      .select("id")
+      .single();
     if (error) return toast.error(error.message);
-    toast.success("Store created");
+
+    const storeId = (created as { id: string }).id;
+    if (ownerEmail.trim() || ownerUserId.trim()) {
+      await linkOwner(storeId, ownerEmail, ownerUserId);
+    } else {
+      toast.success("Store created");
+    }
+
     setName("");
     setDesc("");
     setAddr("");
     setImg("");
     setOwnerEmail("");
-    load();
+    setOwnerUserId("");
+    if (!ownerEmail.trim() && !ownerUserId.trim()) load();
   };
 
   const updateStore = async (id: string, patch: Partial<S>) => {
@@ -158,6 +202,23 @@ function AdminStores() {
             <Label>Image URL</Label>
             <Input value={img} onChange={(e) => setImg(e.target.value)} />
           </div>
+          <div>
+            <Label>Owner email (optional)</Label>
+            <Input
+              type="email"
+              value={ownerEmail}
+              onChange={(e) => setOwnerEmail(e.target.value)}
+              placeholder="vendor@example.com"
+            />
+          </div>
+          <div>
+            <Label>Owner user ID (optional)</Label>
+            <Input
+              value={ownerUserId}
+              onChange={(e) => setOwnerUserId(e.target.value)}
+              placeholder="uuid from Users tab"
+            />
+          </div>
         </div>
         <Button variant="hero" className="mt-4" onClick={create}>
           <Plus className="h-4 w-4" /> Create store
@@ -166,42 +227,87 @@ function AdminStores() {
 
       <div className="space-y-2">
         {stores.map((s) => (
-          <Card key={s.id} className="p-4 flex items-center gap-3 flex-wrap">
-            {s.image_url && (
-              <img src={s.image_url} alt={s.name} className="h-12 w-12 rounded object-cover" />
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold">{s.name}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {s.address} · {getStoreCategoryLabel(s.category)} · $
-                {Number(s.delivery_fee).toFixed(2)} fee
-              </p>
-              {!s.owner_id && (
-                <p className="text-xs text-warning mt-0.5">No vendor assigned (manual mode only)</p>
+          <Card key={s.id} className="p-4 space-y-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              {s.image_url && (
+                <img src={s.image_url} alt={s.name} className="h-12 w-12 rounded object-cover" />
               )}
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold">{s.name}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {s.address} · {getStoreCategoryLabel(s.category)} · $
+                  {Number(s.delivery_fee).toFixed(2)} fee · {s.mode}
+                </p>
+                {s.owner_id ? (
+                  <p className="text-xs text-muted-foreground mt-0.5 font-mono truncate">
+                    Owner: {s.owner_id}
+                  </p>
+                ) : (
+                  <p className="text-xs text-warning mt-0.5">No vendor assigned</p>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs">Open</span>
+                <Switch
+                  checked={s.is_open}
+                  onCheckedChange={(v) => updateStore(s.id, { is_open: v })}
+                />
+              </div>
+              <Select
+                value={s.mode}
+                onValueChange={(v) => updateStore(s.id, { mode: v as StoreMode })}
+              >
+                <SelectTrigger className="w-36 h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="manual">Manual</SelectItem>
+                  <SelectItem value="dashboard">Dashboard</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setLinkingStoreId(linkingStoreId === s.id ? null : s.id);
+                  setLinkEmail("");
+                  setLinkUserId("");
+                }}
+              >
+                <UserPlus className="h-4 w-4" /> Assign owner
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => remove(s.id)}>
+                <Trash2 className="h-4 w-4 text-destructive" />
+              </Button>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs">Open</span>
-              <Switch
-                checked={s.is_open}
-                onCheckedChange={(v) => updateStore(s.id, { is_open: v })}
-              />
-            </div>
-            <Select
-              value={s.mode}
-              onValueChange={(v) => updateStore(s.id, { mode: v as StoreMode })}
-            >
-              <SelectTrigger className="w-32 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="manual">Manual</SelectItem>
-                <SelectItem value="dashboard">Dashboard</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="ghost" size="icon" onClick={() => remove(s.id)}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
+            {linkingStoreId === s.id && (
+              <div className="flex flex-wrap items-end gap-2 pt-2 border-t border-border">
+                <div className="flex-1 min-w-[180px]">
+                  <Label className="text-xs">Email</Label>
+                  <Input
+                    type="email"
+                    value={linkEmail}
+                    onChange={(e) => setLinkEmail(e.target.value)}
+                    placeholder="vendor@example.com"
+                  />
+                </div>
+                <div className="flex-1 min-w-[180px]">
+                  <Label className="text-xs">User ID</Label>
+                  <Input
+                    value={linkUserId}
+                    onChange={(e) => setLinkUserId(e.target.value)}
+                    placeholder="uuid"
+                  />
+                </div>
+                <Button
+                  variant="hero"
+                  size="sm"
+                  onClick={() => linkOwner(s.id, linkEmail, linkUserId)}
+                >
+                  Link vendor
+                </Button>
+              </div>
+            )}
           </Card>
         ))}
       </div>

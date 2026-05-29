@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,11 @@ import { ArrowDownAZ, Clock, LayoutGrid, MapPin, Search, Sparkles } from "lucide
 
 export const Route = createFileRoute("/shop")({
   head: () => ({ meta: [{ title: "Browse stores — SwiftDrop" }] }),
-  component: Shop,
+  component: () => (
+    <BlockDeliveryAgents>
+      <Shop />
+    </BlockDeliveryAgents>
+  ),
 });
 
 interface StoreRow {

@@ -1,7 +1,8 @@
-import { createFileRoute, useParams, Link } from "@tanstack/react-router";
+import { createFileRoute, useParams, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { RequireRole } from "@/components/RoleRouter";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -10,17 +11,21 @@ import { Button } from "@/components/ui/button";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { Check, CreditCard, X } from "lucide-react";
 import { toast } from "sonner";
+import { isStripeConfigured, payOrderSubtotal } from "@/lib/payments";
 
 export const Route = createFileRoute("/orders/$id")({
   component: () => (
-    <RequireRole>
-      <OrderTracking />
-    </RequireRole>
+    <BlockDeliveryAgents>
+      <RequireRole role="customer">
+        <OrderTracking />
+      </RequireRole>
+    </BlockDeliveryAgents>
   ),
 });
 
 interface Order {
   id: string;
+  customer_id: string;
   status: string;
   payment_status: string;
   subtotal: number;
@@ -59,15 +64,26 @@ const STEPS = [
 
 function OrderTracking() {
   const { id } = useParams({ from: "/orders/$id" });
-  const { user } = useAuth();
+  const { user, roles } = useAuth();
+  const navigate = useNavigate();
   const [order, setOrder] = useState<Order | null>(null);
+  const [accessDenied, setAccessDenied] = useState(false);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [store, setStore] = useState<StoreLite | null>(null);
 
   const load = async () => {
-    const { data: o } = await supabase.from("orders").select("*").eq("id", id).single();
+    const { data: o, error } = await supabase.from("orders").select("*").eq("id", id).single();
+    if (error || !o) {
+      setAccessDenied(true);
+      return;
+    }
+    const row = o as Order & { customer_id: string };
+    if (user && row.customer_id !== user.id && !roles.includes("admin")) {
+      setAccessDenied(true);
+      return;
+    }
     if (o) {
-      setOrder(o as Order);
+      setOrder(row);
       const [it, st] = await Promise.all([
         supabase.from("order_items").select("*").eq("order_id", id),
         supabase
@@ -99,6 +115,22 @@ function OrderTracking() {
     };
   }, [id]);
 
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <div className="flex-1 p-12 text-center">
+          <h1 className="font-display text-2xl font-bold">Order not found</h1>
+          <p className="text-muted-foreground mt-2">You do not have access to this order.</p>
+          <Button variant="hero" className="mt-6" onClick={() => navigate({ to: "/orders" })}>
+            Back to orders
+          </Button>
+        </div>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   if (!order || !user)
     return (
       <div className="min-h-screen flex flex-col">
@@ -113,12 +145,28 @@ function OrderTracking() {
   const canCancel = ["pending_confirmation", "awaiting_payment"].includes(order.status);
 
   const payNow = async () => {
+    const subtotalCents = Math.round(Number(order.subtotal) * 100);
+    const result = await payOrderSubtotal(id, subtotalCents);
+
+    if (result.mode === "stripe" && result.checkoutUrl) {
+      window.location.href = result.checkoutUrl;
+      return;
+    }
+    if (result.mode === "error") {
+      toast.error(result.message);
+      return;
+    }
+
     const { error } = await supabase
       .from("orders")
       .update({ payment_status: "paid", status: "preparing", paid_at: new Date().toISOString() })
       .eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success("Mock payment ✓ — Store is preparing your order");
+    toast.success(
+      isStripeConfigured()
+        ? "Payment recorded — store is preparing your order"
+        : "Mock payment ✓ — Store is preparing your order",
+    );
   };
 
   const cancel = async () => {
@@ -194,7 +242,8 @@ function OrderTracking() {
                 </p>
               </div>
               <Button variant="hero" size="lg" onClick={payNow}>
-                <CreditCard className="h-4 w-4" /> Pay ${order.subtotal.toFixed(2)} (mock)
+                <CreditCard className="h-4 w-4" /> Pay ${order.subtotal.toFixed(2)}
+                {!isStripeConfigured() ? " (mock)" : ""}
               </Button>
             </div>
           </Card>

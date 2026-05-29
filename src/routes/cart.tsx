@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { useCart } from "@/lib/cart";
 import { useAuth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
@@ -16,7 +17,11 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({ meta: [{ title: "Your cart — SwiftDrop" }] }),
-  component: CartPage,
+  component: () => (
+    <BlockDeliveryAgents>
+      <CartPage />
+    </BlockDeliveryAgents>
+  ),
 });
 
 const checkoutSchema = z.object({
@@ -37,18 +42,26 @@ function CartPage() {
   const [submitting, setSubmitting] = useState(false);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
 
-  // Load delivery fee for the store in cart
-  useState(() => {
-    if (!storeId) return;
+  useEffect(() => {
+    if (!storeId) {
+      setDeliveryFee(0);
+      return;
+    }
+    let cancelled = false;
     supabase
       .from("stores")
       .select("delivery_fee")
       .eq("id", storeId)
       .single()
       .then(({ data }) => {
-        if (data) setDeliveryFee(Number((data as { delivery_fee: number }).delivery_fee));
+        if (!cancelled && data) {
+          setDeliveryFee(Number((data as { delivery_fee: number }).delivery_fee));
+        }
       });
-  });
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId]);
 
   const total = subtotal + deliveryFee;
 

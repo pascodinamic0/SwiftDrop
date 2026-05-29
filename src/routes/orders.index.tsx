@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { RequireRole } from "@/components/RoleRouter";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -11,9 +12,11 @@ import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 export const Route = createFileRoute("/orders/")({
   head: () => ({ meta: [{ title: "My orders — SwiftDrop" }] }),
   component: () => (
-    <RequireRole>
-      <OrdersList />
-    </RequireRole>
+    <BlockDeliveryAgents>
+      <RequireRole>
+        <OrdersList />
+      </RequireRole>
+    </BlockDeliveryAgents>
   ),
 });
 

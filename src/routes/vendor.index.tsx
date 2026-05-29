@@ -46,7 +46,12 @@ function VendorOrders() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase.from("stores").select("id").eq("owner_id", user.id).limit(1).single();
+      const { data } = await supabase
+        .from("stores")
+        .select("id")
+        .eq("owner_id", user.id)
+        .eq("mode", "dashboard")
+        .maybeSingle();
       const sid = (data as { id: string } | null)?.id ?? null;
       setStoreId(sid);
       if (sid) load(sid);

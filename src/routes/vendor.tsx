@@ -16,13 +16,22 @@ function VendorShell() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const path = useRouterState({ select: (r) => r.location.pathname });
-  const [hasStore, setHasStore] = useState<boolean | null>(null);
+  const [storeState, setStoreState] = useState<"loading" | "none" | "manual" | "dashboard">(
+    "loading",
+  );
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase.from("stores").select("id").eq("owner_id", user.id).limit(1);
-      setHasStore((data?.length ?? 0) > 0);
+      const { data } = await supabase
+        .from("stores")
+        .select("id, mode")
+        .eq("owner_id", user.id)
+        .limit(1);
+      const store = data?.[0] as { id: string; mode: string } | undefined;
+      if (!store) setStoreState("none");
+      else if (store.mode === "manual") setStoreState("manual");
+      else setStoreState("dashboard");
     })();
   }, [user]);
 
@@ -32,13 +41,55 @@ function VendorShell() {
     { url: "/vendor/settings", label: "Store", icon: SettingsIcon },
   ];
 
-  if (hasStore === false) {
+  if (storeState === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (storeState === "none") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
         <Logo />
         <h1 className="font-display text-3xl font-bold mt-6">No store linked yet</h1>
-        <p className="text-muted-foreground mt-2 max-w-sm">An admin needs to assign a store to your account. Contact support.</p>
-        <Button variant="outline" className="mt-6" onClick={async () => { await signOut(); navigate({ to: "/" }); }}><LogOut className="h-4 w-4" /> Sign out</Button>
+        <p className="text-muted-foreground mt-2 max-w-sm">
+          An admin must assign you as the owner of a store with dashboard mode enabled.
+        </p>
+        <Button
+          variant="outline"
+          className="mt-6"
+          onClick={async () => {
+            await signOut();
+            navigate({ to: "/" });
+          }}
+        >
+          <LogOut className="h-4 w-4" /> Sign out
+        </Button>
+      </div>
+    );
+  }
+
+  if (storeState === "manual") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
+        <Logo />
+        <h1 className="font-display text-3xl font-bold mt-6">Manual store mode</h1>
+        <p className="text-muted-foreground mt-2 max-w-sm">
+          Your store is operated by SwiftDrop admins. The vendor dashboard is disabled until an
+          admin switches the store to dashboard mode.
+        </p>
+        <Button
+          variant="outline"
+          className="mt-6"
+          onClick={async () => {
+            await signOut();
+            navigate({ to: "/shop" });
+          }}
+        >
+          Browse as customer
+        </Button>
       </div>
     );
   }

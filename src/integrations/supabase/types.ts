@@ -307,40 +307,79 @@ export type Database = {
       }
       rider_profiles: {
         Row: {
+          application_notes: string | null
+          applied_at: string | null
           cash_collected: number
+          city: string | null
           created_at: string
           current_lat: number | null
           current_lng: number | null
+          date_of_birth: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          government_id: string | null
+          home_address: string | null
           id: string
           is_online: boolean
+          license_plate: string | null
+          rejection_reason: string | null
           total_deliveries: number
           total_earnings: number
           updated_at: string
           vehicle: Database["public"]["Enums"]["vehicle_type"]
+          verification_status: Database["public"]["Enums"]["rider_verification_status"]
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
+          application_notes?: string | null
+          applied_at?: string | null
           cash_collected?: number
+          city?: string | null
           created_at?: string
           current_lat?: number | null
           current_lng?: number | null
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          government_id?: string | null
+          home_address?: string | null
           id: string
           is_online?: boolean
+          license_plate?: string | null
+          rejection_reason?: string | null
           total_deliveries?: number
           total_earnings?: number
           updated_at?: string
           vehicle?: Database["public"]["Enums"]["vehicle_type"]
+          verification_status?: Database["public"]["Enums"]["rider_verification_status"]
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
+          application_notes?: string | null
+          applied_at?: string | null
           cash_collected?: number
+          city?: string | null
           created_at?: string
           current_lat?: number | null
           current_lng?: number | null
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          government_id?: string | null
+          home_address?: string | null
           id?: string
           is_online?: boolean
+          license_plate?: string | null
+          rejection_reason?: string | null
           total_deliveries?: number
           total_earnings?: number
           updated_at?: string
           vehicle?: Database["public"]["Enums"]["vehicle_type"]
+          verification_status?: Database["public"]["Enums"]["rider_verification_status"]
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: []
       }
@@ -431,6 +470,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_verified_rider: {
+        Args: {
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      review_rider_application: {
+        Args: {
+          p_decision: Database["public"]["Enums"]["rider_verification_status"]
+          p_rejection_reason?: string | null
+          p_rider_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "customer" | "delivery_agent" | "admin" | "vendor"
@@ -446,6 +499,7 @@ export type Database = {
         | "rejected"
         | "failed"
       payment_status: "unpaid" | "paid" | "refunded"
+      rider_verification_status: "pending" | "approved" | "rejected"
       store_category:
         | "bakery"
         | "coffee"

@@ -30,8 +30,10 @@ import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
 import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
 import { Route as RiderActiveRouteImport } from './routes/rider.active'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as AuthRiderRouteImport } from './routes/auth.rider'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminStoresRouteImport } from './routes/admin.stores'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminRidersRouteImport } from './routes/admin.riders'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 
@@ -140,6 +142,11 @@ const OrdersIdRoute = OrdersIdRouteImport.update({
   path: '/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRiderRoute = AuthRiderRouteImport.update({
+  id: '/rider',
+  path: '/rider',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -148,6 +155,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
 const AdminStoresRoute = AdminStoresRouteImport.update({
   id: '/stores',
   path: '/stores',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminRidersRoute = AdminRidersRouteImport.update({
@@ -164,7 +176,7 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
@@ -175,8 +187,10 @@ export interface FileRoutesByFullPath {
   '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
+  '/auth/rider': typeof AuthRiderRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -190,7 +204,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
@@ -199,8 +213,10 @@ export interface FileRoutesByTo {
   '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
+  '/auth/rider': typeof AuthRiderRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -216,7 +232,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/become-rider': typeof BecomeRiderRoute
   '/cart': typeof CartRoute
   '/privacy': typeof PrivacyRoute
@@ -227,8 +243,10 @@ export interface FileRoutesById {
   '/why-us': typeof WhyUsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/riders': typeof AdminRidersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/stores': typeof AdminStoresRoute
   '/admin/users': typeof AdminUsersRoute
+  '/auth/rider': typeof AuthRiderRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -256,8 +274,10 @@ export interface FileRouteTypes {
     | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
+    | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
+    | '/auth/rider'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -280,8 +300,10 @@ export interface FileRouteTypes {
     | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
+    | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
+    | '/auth/rider'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -307,8 +329,10 @@ export interface FileRouteTypes {
     | '/why-us'
     | '/admin/orders'
     | '/admin/riders'
+    | '/admin/settings'
     | '/admin/stores'
     | '/admin/users'
+    | '/auth/rider'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -324,7 +348,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   BecomeRiderRoute: typeof BecomeRiderRoute
   CartRoute: typeof CartRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -486,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/rider': {
+      id: '/auth/rider'
+      path: '/rider'
+      fullPath: '/auth/rider'
+      preLoaderRoute: typeof AuthRiderRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -498,6 +529,13 @@ declare module '@tanstack/react-router' {
       path: '/stores'
       fullPath: '/admin/stores'
       preLoaderRoute: typeof AdminStoresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/riders': {
@@ -520,6 +558,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminRidersRoute: typeof AdminRidersRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStoresRoute: typeof AdminStoresRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -528,12 +567,23 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminOrdersRoute: AdminOrdersRoute,
   AdminRidersRoute: AdminRidersRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminStoresRoute: AdminStoresRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface AuthRouteChildren {
+  AuthRiderRoute: typeof AuthRiderRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthRiderRoute: AuthRiderRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface RiderRouteChildren {
   RiderActiveRoute: typeof RiderActiveRoute
@@ -577,7 +627,7 @@ const VendorRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   BecomeRiderRoute: BecomeRiderRoute,
   CartRoute: CartRoute,
   PrivacyRoute: PrivacyRoute,

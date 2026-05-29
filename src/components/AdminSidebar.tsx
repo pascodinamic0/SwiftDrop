@@ -5,7 +5,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Logo } from "./Logo";
-import { LayoutDashboard, Package, Users, Bike, Store, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, Users, Bike, Store, LogOut, Settings } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
@@ -15,6 +15,7 @@ const items = [
   { title: "Stores", url: "/admin/stores", icon: Store },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Riders", url: "/admin/riders", icon: Bike },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ] as const;
 
 export function AdminSidebar() {

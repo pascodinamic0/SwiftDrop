@@ -62,7 +62,7 @@ function Home() {
                       Browse stores <ArrowRight className="h-5 w-5" />
                     </Button>
                   </Link>
-                  <Link to="/become-rider">
+                  <Link to="/auth/rider" search={{ mode: "signup" }}>
                     <Button variant="dark" size="xl">
                       <Bike className="h-5 w-5" /> Become a rider
                     </Button>

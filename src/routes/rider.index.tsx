@@ -2,11 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useRiderProfile } from "@/lib/useRiderProfile";
+import { isVerifiedRider } from "@/lib/roles";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Package, DollarSign } from "lucide-react";
+import { MapPin, Package, DollarSign, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/rider/")({
   component: RiderJobs,
@@ -21,11 +24,17 @@ interface StoreLite { id: string; name: string; address: string; }
 
 function RiderJobs() {
   const { user } = useAuth();
+  const { profile, loading: profileLoading } = useRiderProfile();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<JobRow[]>([]);
   const [stores, setStores] = useState<Record<string, StoreLite>>({});
+  const verified = isVerifiedRider(profile);
 
   const load = async () => {
+    if (!verified) {
+      setJobs([]);
+      return;
+    }
     // Available = ready + no rider assigned
     const { data } = await supabase.from("orders").select("*").eq("status", "ready").is("rider_id", null).order("created_at", { ascending: false });
     const rows = (data ?? []) as JobRow[];
@@ -39,8 +48,9 @@ function RiderJobs() {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [verified]);
   useEffect(() => {
+    if (!verified) return;
     const ch = supabase.channel("rider-available")
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, load)
       .subscribe();
@@ -48,7 +58,7 @@ function RiderJobs() {
   }, []);
 
   const accept = async (orderId: string) => {
-    if (!user) return;
+    if (!user || !verified) return;
     const { error } = await supabase.from("orders")
       .update({ rider_id: user.id, status: "picked_up", picked_up_at: new Date().toISOString() })
       .eq("id", orderId)
@@ -62,9 +72,26 @@ function RiderJobs() {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="font-display text-2xl font-bold">Available jobs</h1>
-      <p className="text-sm text-muted-foreground">First to accept wins.</p>
+      <p className="text-sm text-muted-foreground">
+        {verified ? "First to accept wins." : "Jobs unlock after your account is verified."}
+      </p>
 
-      {jobs.length === 0 ? (
+      {profileLoading ? (
+        <Card className="mt-6 p-12 text-center text-muted-foreground">Loading...</Card>
+      ) : !verified ? (
+        <Card className="mt-6 p-12 text-center">
+          <ShieldCheck className="h-10 w-10 mx-auto text-amber-600 mb-3" />
+          <p className="font-semibold">Verification required</p>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
+            You can browse the job portal, but accepting deliveries is locked until an admin approves your application.
+          </p>
+          {profile?.verification_status === "rejected" && (
+            <Button asChild variant="outline" className="mt-4">
+              <Link to="/become-rider">Update application</Link>
+            </Button>
+          )}
+        </Card>
+      ) : jobs.length === 0 ? (
         <Card className="mt-6 p-12 text-center text-muted-foreground">
           <Package className="h-10 w-10 mx-auto opacity-50 mb-3" />
           No jobs right now. Check back soon!

@@ -2,6 +2,7 @@ import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { BlockDeliveryAgents } from "@/components/BlockDeliveryAgents";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,11 @@ import { toast } from "sonner";
 import { getStoreCategoryLabel } from "@/lib/store-categories";
 
 export const Route = createFileRoute("/shop/$storeId")({
-  component: StorePage,
+  component: () => (
+    <BlockDeliveryAgents>
+      <StorePage />
+    </BlockDeliveryAgents>
+  ),
 });
 
 interface Store {

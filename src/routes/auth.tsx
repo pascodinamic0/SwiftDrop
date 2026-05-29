@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, type FormEvent, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { dashboardFor } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { z } from "zod";
 
 const SearchSchema = z.object({
   mode: z.enum(["login", "signup"]).optional(),
+  intent: z.enum(["rider"]).optional(),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -20,10 +22,15 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const credSchema = z.object({
+const loginSchema = z.object({
+  email: z.string().email().max(255),
+  password: z.string().min(1, "Password is required").max(72),
+});
+
+const signupSchema = z.object({
   email: z.string().email().max(255),
   password: z.string().min(6).max(72),
-  fullName: z.string().trim().min(1).max(100).optional(),
+  fullName: z.string().trim().min(1).max(100),
 });
 
 function AuthPage() {
@@ -39,23 +46,19 @@ function AuthPage() {
   // Redirect once authed
   useEffect(() => {
     if (loading || !user) return;
-    const dash = roles.includes("admin")
-      ? "/admin"
-      : roles.includes("vendor")
-        ? "/vendor"
-        : roles.includes("delivery_agent")
-          ? "/rider"
-          : "/shop";
-    navigate({ to: dash });
-  }, [user, roles, loading, navigate]);
+    if (search.intent === "rider") {
+      navigate({ to: "/auth/rider" });
+      return;
+    }
+    navigate({ to: dashboardFor(roles) });
+  }, [user, roles, loading, navigate, search.intent]);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const parsed = credSchema.safeParse({
-      email,
-      password,
-      fullName: mode === "signup" ? fullName : undefined,
-    });
+    const parsed =
+      mode === "signup"
+        ? signupSchema.safeParse({ email, password, fullName })
+        : loginSchema.safeParse({ email, password });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
@@ -98,8 +101,8 @@ function AuthPage() {
             </h1>
             <p className="mt-2 text-muted-foreground">
               {mode === "login"
-                ? "Sign in to send or accept deliveries."
-                : "Start sending packages in under a minute."}
+                ? "Sign in to order from local stores or manage your rider account."
+                : "Create a customer account to browse stores and place orders."}
             </p>
 
             <form onSubmit={onSubmit} className="mt-8 space-y-4">
@@ -135,7 +138,7 @@ function AuthPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  minLength={6}
+                  minLength={mode === "signup" ? 6 : 1}
                 />
               </div>
               <Button
@@ -204,9 +207,9 @@ function AuthPage() {
         </div>
         <div className="relative flex-shrink-0 space-y-4">
           {[
-            "Pick a role after signup — Customer or Delivery Agent.",
-            "Set your pickup and drop-off, see the price upfront.",
-            "Track your courier (or drone) in real time.",
+            "New accounts start as customers — browse stores and place orders.",
+            "Become a rider anytime from the menu if you want to deliver.",
+            "Track your order from confirmation through delivery.",
           ].map((s, i) => (
             <div key={i} className="flex gap-3 items-start">
               <div className="h-7 w-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
