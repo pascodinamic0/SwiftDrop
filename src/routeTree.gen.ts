@@ -9,86 +9,41 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WhyUsRouteImport } from './routes/why-us'
-import { Route as VendorRouteImport } from './routes/vendor'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ShopRouteImport } from './routes/shop'
-import { Route as RiderRouteImport } from './routes/rider'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as CartRouteImport } from './routes/cart'
-import { Route as BecomeRiderRouteImport } from './routes/become-rider'
-import { Route as BecomeMerchantRouteImport } from './routes/become-merchant'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as VendorIndexRouteImport } from './routes/vendor.index'
-import { Route as RiderIndexRouteImport } from './routes/rider.index'
-import { Route as OrdersIndexRouteImport } from './routes/orders.index'
-import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BecomeMerchantRouteImport } from './routes/become-merchant'
+import { Route as BecomeRiderRouteImport } from './routes/become-rider'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RiderRouteImport } from './routes/rider'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VendorRouteImport } from './routes/vendor'
+import { Route as WhyUsRouteImport } from './routes/why-us'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as VendorSettingsRouteImport } from './routes/vendor.settings'
-import { Route as VendorMenuRouteImport } from './routes/vendor.menu'
-import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
-import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
-import { Route as RiderActiveRouteImport } from './routes/rider.active'
-import { Route as OrdersIdRouteImport } from './routes/orders.$id'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as AuthVendorRouteImport } from './routes/auth.vendor'
-import { Route as AuthRiderRouteImport } from './routes/auth.rider'
-import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminStoresRouteImport } from './routes/admin.stores'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminRidersRouteImport } from './routes/admin.riders'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminStoresRouteImport } from './routes/admin.stores'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AuthRiderRouteImport } from './routes/auth.rider'
+import { Route as AuthVendorRouteImport } from './routes/auth.vendor'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as RiderIndexRouteImport } from './routes/rider.index'
+import { Route as RiderActiveRouteImport } from './routes/rider.active'
+import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
+import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
+import { Route as VendorIndexRouteImport } from './routes/vendor.index'
+import { Route as VendorMenuRouteImport } from './routes/vendor.menu'
+import { Route as VendorSettingsRouteImport } from './routes/vendor.settings'
 import { Route as AdminStoresStoreIdRouteImport } from './routes/admin.stores.$storeId'
 
-const WhyUsRoute = WhyUsRouteImport.update({
-  id: '/why-us',
-  path: '/why-us',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VendorRoute = VendorRouteImport.update({
-  id: '/vendor',
-  path: '/vendor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RiderRoute = RiderRouteImport.update({
-  id: '/rider',
-  path: '/rider',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CartRoute = CartRouteImport.update({
-  id: '/cart',
-  path: '/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BecomeRiderRoute = BecomeRiderRouteImport.update({
-  id: '/become-rider',
-  path: '/become-rider',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BecomeMerchantRoute = BecomeMerchantRouteImport.update({
-  id: '/become-merchant',
-  path: '/become-merchant',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -96,29 +51,54 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VendorIndexRoute = VendorIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => VendorRoute,
-} as any)
-const RiderIndexRoute = RiderIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => RiderRoute,
-} as any)
-const OrdersIndexRoute = OrdersIndexRouteImport.update({
-  id: '/orders/',
-  path: '/orders/',
+const BecomeMerchantRoute = BecomeMerchantRouteImport.update({
+  id: '/become-merchant',
+  path: '/become-merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
+const BecomeRiderRoute = BecomeRiderRouteImport.update({
+  id: '/become-rider',
+  path: '/become-rider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiderRoute = RiderRouteImport.update({
+  id: '/rider',
+  path: '/rider',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VendorRoute = VendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhyUsRoute = WhyUsRouteImport.update({
+  id: '/why-us',
+  path: '/why-us',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -126,59 +106,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const VendorSettingsRoute = VendorSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => VendorRoute,
-} as any)
-const VendorMenuRoute = VendorMenuRouteImport.update({
-  id: '/menu',
-  path: '/menu',
-  getParentRoute: () => VendorRoute,
-} as any)
-const ShopStoreIdRoute = ShopStoreIdRouteImport.update({
-  id: '/$storeId',
-  path: '/$storeId',
-  getParentRoute: () => ShopRoute,
-} as any)
-const RiderEarningsRoute = RiderEarningsRouteImport.update({
-  id: '/earnings',
-  path: '/earnings',
-  getParentRoute: () => RiderRoute,
-} as any)
-const RiderActiveRoute = RiderActiveRouteImport.update({
-  id: '/active',
-  path: '/active',
-  getParentRoute: () => RiderRoute,
-} as any)
-const OrdersIdRoute = OrdersIdRouteImport.update({
-  id: '/orders/$id',
-  path: '/orders/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthVendorRoute = AuthVendorRouteImport.update({
-  id: '/vendor',
-  path: '/vendor',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthRiderRoute = AuthRiderRouteImport.update({
-  id: '/rider',
-  path: '/rider',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStoresRoute = AdminStoresRouteImport.update({
-  id: '/stores',
-  path: '/stores',
+const AdminRidersRoute = AdminRidersRouteImport.update({
+  id: '/riders',
+  path: '/riders',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -186,10 +116,80 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminRidersRoute = AdminRidersRouteImport.update({
-  id: '/riders',
-  path: '/riders',
+const AdminStoresRoute = AdminStoresRouteImport.update({
+  id: '/stores',
+  path: '/stores',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AuthRiderRoute = AuthRiderRouteImport.update({
+  id: '/rider',
+  path: '/rider',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthVendorRoute = AuthVendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => AuthRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersIdRoute = OrdersIdRouteImport.update({
+  id: '/orders/$id',
+  path: '/orders/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RiderIndexRoute = RiderIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RiderRoute,
+} as any)
+const RiderActiveRoute = RiderActiveRouteImport.update({
+  id: '/active',
+  path: '/active',
+  getParentRoute: () => RiderRoute,
+} as any)
+const RiderEarningsRoute = RiderEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => RiderRoute,
+} as any)
+const ShopStoreIdRoute = ShopStoreIdRouteImport.update({
+  id: '/$storeId',
+  path: '/$storeId',
+  getParentRoute: () => ShopRoute,
+} as any)
+const VendorIndexRoute = VendorIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorMenuRoute = VendorMenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorSettingsRoute = VendorSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => VendorRoute,
 } as any)
 const AdminStoresStoreIdRoute = AdminStoresStoreIdRouteImport.update({
   id: '/$storeId',
@@ -414,74 +414,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/why-us': {
-      id: '/why-us'
-      path: '/why-us'
-      fullPath: '/why-us'
-      preLoaderRoute: typeof WhyUsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/vendor': {
-      id: '/vendor'
-      path: '/vendor'
-      fullPath: '/vendor'
-      preLoaderRoute: typeof VendorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rider': {
-      id: '/rider'
-      path: '/rider'
-      fullPath: '/rider'
-      preLoaderRoute: typeof RiderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cart': {
-      id: '/cart'
-      path: '/cart'
-      fullPath: '/cart'
-      preLoaderRoute: typeof CartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/become-rider': {
-      id: '/become-rider'
-      path: '/become-rider'
-      fullPath: '/become-rider'
-      preLoaderRoute: typeof BecomeRiderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/become-merchant': {
-      id: '/become-merchant'
-      path: '/become-merchant'
-      fullPath: '/become-merchant'
-      preLoaderRoute: typeof BecomeMerchantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -491,39 +428,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vendor/': {
-      id: '/vendor/'
-      path: '/'
-      fullPath: '/vendor/'
-      preLoaderRoute: typeof VendorIndexRouteImport
-      parentRoute: typeof VendorRoute
-    }
-    '/rider/': {
-      id: '/rider/'
-      path: '/'
-      fullPath: '/rider/'
-      preLoaderRoute: typeof RiderIndexRouteImport
-      parentRoute: typeof RiderRoute
-    }
-    '/orders/': {
-      id: '/orders/'
-      path: '/orders'
-      fullPath: '/orders/'
-      preLoaderRoute: typeof OrdersIndexRouteImport
+    '/become-merchant': {
+      id: '/become-merchant'
+      path: '/become-merchant'
+      fullPath: '/become-merchant'
+      preLoaderRoute: typeof BecomeMerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/': {
-      id: '/blog/'
-      path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof BlogIndexRouteImport
+    '/become-rider': {
+      id: '/become-rider'
+      path: '/become-rider'
+      fullPath: '/become-rider'
+      preLoaderRoute: typeof BecomeRiderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rider': {
+      id: '/rider'
+      path: '/rider'
+      fullPath: '/rider'
+      preLoaderRoute: typeof RiderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vendor': {
+      id: '/vendor'
+      path: '/vendor'
+      fullPath: '/vendor'
+      preLoaderRoute: typeof VendorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/why-us': {
+      id: '/why-us'
+      path: '/why-us'
+      fullPath: '/why-us'
+      preLoaderRoute: typeof WhyUsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -533,81 +505,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/vendor/settings': {
-      id: '/vendor/settings'
-      path: '/settings'
-      fullPath: '/vendor/settings'
-      preLoaderRoute: typeof VendorSettingsRouteImport
-      parentRoute: typeof VendorRoute
-    }
-    '/vendor/menu': {
-      id: '/vendor/menu'
-      path: '/menu'
-      fullPath: '/vendor/menu'
-      preLoaderRoute: typeof VendorMenuRouteImport
-      parentRoute: typeof VendorRoute
-    }
-    '/shop/$storeId': {
-      id: '/shop/$storeId'
-      path: '/$storeId'
-      fullPath: '/shop/$storeId'
-      preLoaderRoute: typeof ShopStoreIdRouteImport
-      parentRoute: typeof ShopRoute
-    }
-    '/rider/earnings': {
-      id: '/rider/earnings'
-      path: '/earnings'
-      fullPath: '/rider/earnings'
-      preLoaderRoute: typeof RiderEarningsRouteImport
-      parentRoute: typeof RiderRoute
-    }
-    '/rider/active': {
-      id: '/rider/active'
-      path: '/active'
-      fullPath: '/rider/active'
-      preLoaderRoute: typeof RiderActiveRouteImport
-      parentRoute: typeof RiderRoute
-    }
-    '/orders/$id': {
-      id: '/orders/$id'
-      path: '/orders/$id'
-      fullPath: '/orders/$id'
-      preLoaderRoute: typeof OrdersIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/vendor': {
-      id: '/auth/vendor'
-      path: '/vendor'
-      fullPath: '/auth/vendor'
-      preLoaderRoute: typeof AuthVendorRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/rider': {
-      id: '/auth/rider'
-      path: '/rider'
-      fullPath: '/auth/rider'
-      preLoaderRoute: typeof AuthRiderRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/stores': {
-      id: '/admin/stores'
-      path: '/stores'
-      fullPath: '/admin/stores'
-      preLoaderRoute: typeof AdminStoresRouteImport
+    '/admin/riders': {
+      id: '/admin/riders'
+      path: '/riders'
+      fullPath: '/admin/riders'
+      preLoaderRoute: typeof AdminRidersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -617,12 +519,110 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/riders': {
-      id: '/admin/riders'
-      path: '/riders'
-      fullPath: '/admin/riders'
-      preLoaderRoute: typeof AdminRidersRouteImport
+    '/admin/stores': {
+      id: '/admin/stores'
+      path: '/stores'
+      fullPath: '/admin/stores'
+      preLoaderRoute: typeof AdminStoresRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/auth/rider': {
+      id: '/auth/rider'
+      path: '/rider'
+      fullPath: '/auth/rider'
+      preLoaderRoute: typeof AuthRiderRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/vendor': {
+      id: '/auth/vendor'
+      path: '/vendor'
+      fullPath: '/auth/vendor'
+      preLoaderRoute: typeof AuthVendorRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/$id': {
+      id: '/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/orders/$id'
+      preLoaderRoute: typeof OrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rider/': {
+      id: '/rider/'
+      path: '/'
+      fullPath: '/rider/'
+      preLoaderRoute: typeof RiderIndexRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/rider/active': {
+      id: '/rider/active'
+      path: '/active'
+      fullPath: '/rider/active'
+      preLoaderRoute: typeof RiderActiveRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/rider/earnings': {
+      id: '/rider/earnings'
+      path: '/earnings'
+      fullPath: '/rider/earnings'
+      preLoaderRoute: typeof RiderEarningsRouteImport
+      parentRoute: typeof RiderRoute
+    }
+    '/shop/$storeId': {
+      id: '/shop/$storeId'
+      path: '/$storeId'
+      fullPath: '/shop/$storeId'
+      preLoaderRoute: typeof ShopStoreIdRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/vendor/': {
+      id: '/vendor/'
+      path: '/'
+      fullPath: '/vendor/'
+      preLoaderRoute: typeof VendorIndexRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/menu': {
+      id: '/vendor/menu'
+      path: '/menu'
+      fullPath: '/vendor/menu'
+      preLoaderRoute: typeof VendorMenuRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/settings': {
+      id: '/vendor/settings'
+      path: '/settings'
+      fullPath: '/vendor/settings'
+      preLoaderRoute: typeof VendorSettingsRouteImport
+      parentRoute: typeof VendorRoute
     }
     '/admin/stores/$storeId': {
       id: '/admin/stores/$storeId'
