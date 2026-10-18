@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VendorIndexRouteImport } from './routes/vendor.index'
 import { Route as RiderIndexRouteImport } from './routes/rider.index'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as VendorSettingsRouteImport } from './routes/vendor.settings'
 import { Route as VendorMenuRouteImport } from './routes/vendor.menu'
@@ -31,6 +32,7 @@ import { Route as ShopStoreIdRouteImport } from './routes/shop.$storeId'
 import { Route as RiderEarningsRouteImport } from './routes/rider.earnings'
 import { Route as RiderActiveRouteImport } from './routes/rider.active'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthVendorRouteImport } from './routes/auth.vendor'
 import { Route as AuthRiderRouteImport } from './routes/auth.rider'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -114,6 +116,11 @@ const OrdersIndexRoute = OrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -147,6 +154,11 @@ const RiderActiveRoute = RiderActiveRouteImport.update({
 const OrdersIdRoute = OrdersIdRouteImport.update({
   id: '/orders/$id',
   path: '/orders/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthVendorRoute = AuthVendorRouteImport.update({
@@ -204,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
   '/auth/vendor': typeof AuthVendorRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -211,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/vendor/menu': typeof VendorMenuRoute
   '/vendor/settings': typeof VendorSettingsRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
   '/vendor/': typeof VendorIndexRoute
@@ -232,6 +246,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
   '/auth/vendor': typeof AuthVendorRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -239,6 +254,7 @@ export interface FileRoutesByTo {
   '/vendor/menu': typeof VendorMenuRoute
   '/vendor/settings': typeof VendorSettingsRoute
   '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/orders': typeof OrdersIndexRoute
   '/rider': typeof RiderIndexRoute
   '/vendor': typeof VendorIndexRoute
@@ -264,6 +280,7 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/auth/rider': typeof AuthRiderRoute
   '/auth/vendor': typeof AuthVendorRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/orders/$id': typeof OrdersIdRoute
   '/rider/active': typeof RiderActiveRoute
   '/rider/earnings': typeof RiderEarningsRoute
@@ -271,6 +288,7 @@ export interface FileRoutesById {
   '/vendor/menu': typeof VendorMenuRoute
   '/vendor/settings': typeof VendorSettingsRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/orders/': typeof OrdersIndexRoute
   '/rider/': typeof RiderIndexRoute
   '/vendor/': typeof VendorIndexRoute
@@ -297,6 +315,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/auth/rider'
     | '/auth/vendor'
+    | '/blog/$slug'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -304,6 +323,7 @@ export interface FileRouteTypes {
     | '/vendor/menu'
     | '/vendor/settings'
     | '/admin/'
+    | '/blog/'
     | '/orders/'
     | '/rider/'
     | '/vendor/'
@@ -325,6 +345,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/auth/rider'
     | '/auth/vendor'
+    | '/blog/$slug'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -332,6 +353,7 @@ export interface FileRouteTypes {
     | '/vendor/menu'
     | '/vendor/settings'
     | '/admin'
+    | '/blog'
     | '/orders'
     | '/rider'
     | '/vendor'
@@ -356,6 +378,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/auth/rider'
     | '/auth/vendor'
+    | '/blog/$slug'
     | '/orders/$id'
     | '/rider/active'
     | '/rider/earnings'
@@ -363,6 +386,7 @@ export interface FileRouteTypes {
     | '/vendor/menu'
     | '/vendor/settings'
     | '/admin/'
+    | '/blog/'
     | '/orders/'
     | '/rider/'
     | '/vendor/'
@@ -382,7 +406,9 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   VendorRoute: typeof VendorRouteWithChildren
   WhyUsRoute: typeof WhyUsRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   OrdersIdRoute: typeof OrdersIdRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
@@ -493,6 +519,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -540,6 +573,13 @@ declare module '@tanstack/react-router' {
       path: '/orders/$id'
       fullPath: '/orders/$id'
       preLoaderRoute: typeof OrdersIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/vendor': {
@@ -688,7 +728,9 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   VendorRoute: VendorRouteWithChildren,
   WhyUsRoute: WhyUsRoute,
+  BlogSlugRoute: BlogSlugRoute,
   OrdersIdRoute: OrdersIdRoute,
+  BlogIndexRoute: BlogIndexRoute,
   OrdersIndexRoute: OrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
