@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
-
 export type BlogPostMeta = {
   slug: string;
   title: string;
@@ -13,7 +10,12 @@ export type BlogPostMeta = {
 
 export type BlogPost = BlogPostMeta & { body: string };
 
-const BLOG_DIR = path.join(process.cwd(), "content/blog");
+// Bundle markdown into the server/client build (Vercel serverless has no content/ on disk).
+const rawModules = import.meta.glob("../../content/blog/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
 
 function parseFrontmatter(raw: string): { meta: Record<string, string>; body: string } {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -34,10 +36,9 @@ function estimateReadingTime(body: string): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-function fileToPost(filePath: string): BlogPost {
-  const raw = fs.readFileSync(filePath, "utf8");
+function fileToPost(path: string, raw: string): BlogPost {
   const { meta, body } = parseFrontmatter(raw);
-  const slug = path.basename(filePath, ".md");
+  const slug = path.split("/").pop()!.replace(/\.md$/, "");
   return {
     slug,
     title: meta.title ?? slug,
@@ -50,19 +51,16 @@ function fileToPost(filePath: string): BlogPost {
   };
 }
 
+const posts: BlogPost[] = Object.entries(rawModules)
+  .map(([path, raw]) => fileToPost(path, raw))
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
+
 export function getAllPosts(): BlogPost[] {
-  if (!fs.existsSync(BLOG_DIR)) return [];
-  return fs
-    .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith(".md"))
-    .map((f) => fileToPost(path.join(BLOG_DIR, f)))
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+  return posts;
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
-  const filePath = path.join(BLOG_DIR, `${slug}.md`);
-  if (!fs.existsSync(filePath)) return undefined;
-  return fileToPost(filePath);
+  return posts.find((p) => p.slug === slug);
 }
 
 export function formatPostDate(isoDate: string): string {
